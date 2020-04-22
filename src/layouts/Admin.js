@@ -64,7 +64,7 @@ class Admin extends React.Component {
       <>
         <Sidebar
           {...this.props}
-          routes={routes}
+          routes={routes.filter(route => route.layout !== "/auth")}
           logo={{
             innerLink: "/admin/index",
             imgSrc: require("assets/img/brand/logo.png"),

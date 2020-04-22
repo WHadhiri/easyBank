@@ -14,26 +14,50 @@ import {
   InputGroup,
   Row,
   Col,
+  FormFeedback,
 } from "reactstrap";
 
-const validationHandler = (event) => {
-  const f1 = document.getElementById("f1");
-  const input = event.target.value;
-  if (input.length > 0 && input.length < 10)
-    if (/([0-9]+)/.test(input)) {
-      f1.classList.remove("has-danger");
-      f1.classList.add("has-success");
-    } else {
-      f1.classList.remove("has-success");
-      f1.classList.add("has-danger");
-    }
-  else {
-    f1.classList.remove("has-success");
-    f1.classList.add("has-danger");
-  }
-};
+import { AuthContext } from '../../components/Context/auth-context.js';
+
 
 class Login extends React.Component {
+
+  static contextType = AuthContext;
+
+  constructor() {
+    super();
+    this.state = {
+      email: "",
+      password: "",
+      validate: {
+        emailState: "",
+      },
+      isValid: false,
+    };
+    this.submitForm = this.submitForm.bind(this);
+  }
+
+  validateEmail(e) {
+    const emailRex = /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
+    const { validate} = this.state;
+    if (emailRex.test(e.target.value)) {
+      validate.emailState = "has-success";
+      this.setState({isValid: true});
+    } else {
+      validate.emailState = "has-danger";
+      this.setState({isValid: false});
+    }
+    this.setState({ validate });
+  }
+
+  submitForm(e) {
+    const ctx = this.context;
+    e.preventDefault();
+    console.log(this.state);
+    //console.log(`Email: ${this.state.email}`);
+    ctx.login();
+  }
+
   render() {
     return (
       <>
@@ -45,7 +69,7 @@ class Login extends React.Component {
               </div>
             </CardHeader>
             <CardBody className="px-lg-5 py-lg-5">
-              <Form role="form">
+              <Form role="form" onSubmit={this.submitForm}>
                 <FormGroup className="mb-3" id="f1">
                   <InputGroup className="input-group-alternative">
                     <InputGroupAddon addonType="prepend">
@@ -57,8 +81,21 @@ class Login extends React.Component {
                       placeholder="Email"
                       type="email"
                       autoComplete="new-email"
-                      onBlur={validationHandler}
+                      valid={this.state.validate.emailState === "has-success"}
+                      invalid={this.state.validate.emailState === "has-danger"}
+                      value={this.state.email}
+                      onChange={(e) => {
+                        this.validateEmail(e);
+                        this.setState({email: e.target.value});
+                      }}
                     />
+                    <FormFeedback valid>
+                      That's a tasty looking email you've got there.
+                    </FormFeedback>
+                    <FormFeedback>
+                      Uh oh! Looks like there is an issue with your email.
+                      Please input a correct email.
+                    </FormFeedback>
                   </InputGroup>
                 </FormGroup>
                 <FormGroup>
@@ -72,81 +109,17 @@ class Login extends React.Component {
                       placeholder="Password"
                       type="password"
                       autoComplete="new-password"
+                      value={this.state.password}
+                      onChange={(e) => this.setState({password: e.target.value})}
                     />
                   </InputGroup>
                 </FormGroup>
                 <div className="text-center">
-                  <Button className="my-4" color="primary" type="button">
+                  <Button className="my-4" color="primary" type="submit" disabled={!this.state.isValid}>
                     Login
                   </Button>
                 </div>
               </Form>
-              {/*<AvForm>
-                <AvGroup className="mb-3">
-                  <InputGroupAddon addonType="prepend" className="mb-2">
-                    <InputGroupText>
-                      <i className="ni ni-badge"><span>{" "}Account Number{" "}</span></i>
-                    </InputGroupText>
-                  </InputGroupAddon>
-                  <AvField
-                    name="numaccount"
-                    type="text"
-                    validate={{
-                      required: {
-                        value: true,
-                        errorMessage: "Please enter an Account Number",
-                      },
-                      pattern: {
-                        value: "^[0-9]+$",
-                        errorMessage:
-                          "Account number must be composed only numbers",
-                      },
-                      minLength: {
-                        value: 10,
-                        errorMessage:
-                          "Account number must be composed only with 10 numbers",
-                      },
-                      maxLength: {
-                        value: 10,
-                        errorMessage:
-                          "Account number must be composed only with 10 numbers",
-                      },
-                    }}
-                  />
-                </AvGroup>
-                <AvGroup>
-                <InputGroupAddon addonType="prepend" className="mb-2">
-                    <InputGroupText>
-                      <i className="ni ni-lock-circle-open"><span>{" "}Account Password{" "}</span></i>
-                    </InputGroupText>
-                  </InputGroupAddon>
-                  <AvField
-                    name="numpass"
-                    type="password"
-                    validate={{
-                      required: {
-                        value: true,
-                        errorMessage: "Please enter an Account Password",
-                      },
-                      minLength: {
-                        value: 6,
-                        errorMessage:
-                          "Account password must be between 6 and 16 characters",
-                      },
-                      maxLength: {
-                        value: 16,
-                        errorMessage:
-                          "Account password must be between 6 and 16 characters",
-                      },
-                    }}
-                  />
-                </AvGroup>
-                <div className="text-center">
-                  <Button className="my-4" color="primary" type="button">
-                    Login
-                  </Button>
-                </div>
-              </AvForm>*/}
             </CardBody>
           </Card>
           <Row className="mt-3">

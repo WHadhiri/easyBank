@@ -17,7 +17,7 @@
     "argon-dashboard",
     "argon-dashboard-react"
   ],
-  "author": "Creative Tim",
+  "author": "EasyTeam",
   "license": "MIT",
   "scripts": {
     "start": "react-scripts start",
