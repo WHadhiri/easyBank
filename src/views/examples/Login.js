@@ -17,11 +17,9 @@ import {
   FormFeedback,
 } from "reactstrap";
 
-import { AuthContext } from '../../components/Context/auth-context.js';
-
+import { AuthContext } from "../../components/Context/auth-context.js";
 
 class Login extends React.Component {
-
   static contextType = AuthContext;
 
   constructor() {
@@ -31,30 +29,42 @@ class Login extends React.Component {
       password: "",
       validate: {
         emailState: "",
+        passwordState: "",
       },
       isValid: false,
     };
     this.submitForm = this.submitForm.bind(this);
   }
 
-  validateEmail(e) {
+  validateForm(e) {
     const emailRex = /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
-    const { validate} = this.state;
-    if (emailRex.test(e.target.value)) {
-      validate.emailState = "has-success";
-      this.setState({isValid: true});
-    } else {
-      validate.emailState = "has-danger";
-      this.setState({isValid: false});
+    const { validate } = this.state;
+    switch (e.target.id) {
+      case "ipt1":
+        emailRex.test(e.target.value)
+          ? (validate.emailState = "has-success")
+          : (validate.emailState = "has-danger");
+        break;
+      case "ipt2":
+        e.target.value.length !== 0
+          ? (validate.passwordState = "has-success")
+          : (validate.passwordState = "has-danger");
+        break;
+      default:
+        break;
     }
     this.setState({ validate });
+    if (
+      validate.emailState === "has-success" &&
+      validate.passwordState === "has-success"
+    ) {
+      this.setState({ isValid: true });
+    } else this.setState({ isValid: false });
   }
 
   submitForm(e) {
     const ctx = this.context;
     e.preventDefault();
-    console.log(this.state);
-    //console.log(`Email: ${this.state.email}`);
     ctx.login();
   }
 
@@ -78,6 +88,7 @@ class Login extends React.Component {
                       </InputGroupText>
                     </InputGroupAddon>
                     <Input
+                      id="ipt1"
                       placeholder="Email"
                       type="email"
                       autoComplete="new-email"
@@ -85,8 +96,8 @@ class Login extends React.Component {
                       invalid={this.state.validate.emailState === "has-danger"}
                       value={this.state.email}
                       onChange={(e) => {
-                        this.validateEmail(e);
-                        this.setState({email: e.target.value});
+                        this.validateForm(e);
+                        this.setState({ email: e.target.value });
                       }}
                     />
                     <FormFeedback valid>
@@ -106,16 +117,32 @@ class Login extends React.Component {
                       </InputGroupText>
                     </InputGroupAddon>
                     <Input
+                      id="ipt2"
                       placeholder="Password"
                       type="password"
                       autoComplete="new-password"
                       value={this.state.password}
-                      onChange={(e) => this.setState({password: e.target.value})}
+                      valid={
+                        this.state.validate.passwordState === "has-success"
+                      }
+                      invalid={
+                        this.state.validate.passwordState === "has-danger"
+                      }
+                      onChange={(e) => {
+                        this.validateForm(e);
+                        this.setState({ password: e.target.value });
+                      }}
                     />
+                    <FormFeedback>Password field is required!</FormFeedback>
                   </InputGroup>
                 </FormGroup>
                 <div className="text-center">
-                  <Button className="my-4" color="primary" type="submit" disabled={!this.state.isValid}>
+                  <Button
+                    className="my-4"
+                    color="primary"
+                    type="submit"
+                    disabled={!this.state.isValid}
+                  >
                     Login
                   </Button>
                 </div>

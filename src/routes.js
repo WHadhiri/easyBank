@@ -1,22 +1,22 @@
 import Index from "views/Index.js";
-import Profile from "views/examples/Profile.js";
 import Register from "views/examples/Register.js";
 import Login from "views/examples/Login.js";
 import AddClient from "views/examples/AddClient.js";
+import Clients from "views/examples/Clients.js";
 
 var routes = [
   {
     path: "/index",
     name: "Dashboard",
-    icon: "ni ni-tv-2 text-primary",
+    icon: "ni ni-chart-pie-35 text-primary",
     component: Index,
     layout: "/admin"
   },
   {
-    path: "/user-profile",
-    name: "User Profile",
-    icon: "ni ni-single-02 text-yellow",
-    component: Profile,
+    path: "/clients",
+    name: "Clients List",
+    icon: "ni ni-bullet-list-67 text-yellow",
+    component: Clients,
     layout: "/admin"
   },
   {
@@ -24,13 +24,6 @@ var routes = [
     name: "Add Client",
     icon: "ni ni-circle-08 text-green",
     component: AddClient,
-    layout: "/admin"
-  },
-  {
-    path: "/openAccount",
-    name: "Open Account",
-    icon: "ni ni-fat-add text-blue",
-    component: Register,
     layout: "/admin"
   },
   {

@@ -22,7 +22,7 @@ const App = () => {
     routes = (
       <Switch>
         <Route path="/admin" render={(props) => <AdminLayout {...props} />} />
-        <Redirect from="*" to="/admin" />
+        <Redirect to="/admin" />
       </Switch>
     );
   else
