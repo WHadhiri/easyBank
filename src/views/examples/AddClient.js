@@ -1,4 +1,7 @@
 import React from "react";
+import ReactDatetime from "react-datetime";
+ 
+
 
 // reactstrap components
 import {
@@ -12,11 +15,45 @@ import {
   Container,
   Row,
   Col,
+  InputGroup,
+  InputGroupAddon,
+  InputGroupText,
 } from "reactstrap";
 // core components
 import UserHeader from "components/Headers/UserHeader.js";
 
-class Profile extends React.Component {
+class AddClient extends React.Component {
+  
+  state = {
+    startDate: new Date(),
+    number : 0 ,
+    selected : 0
+  };
+ 
+  generateRandomNumber = () => {
+    const randomNumber = Math.trunc(Math.random()*100000000000)
+    this.setState({number : randomNumber}) 
+  };
+  onChangeHandler=event=>{
+
+    console.log(event.target.files[0])
+
+}
+
+  handleChange = date => {
+    this.setState({
+      startDate: date
+    });
+  };
+
+  handleaccount1= () =>{
+    this.setState({selected:1})
+  }
+
+  handleaccount2= () =>{
+    this.setState({selected:2})
+  }
+
   render() {
     return (
       <>
@@ -46,32 +83,17 @@ class Profile extends React.Component {
                               className="form-control-label"
                               htmlFor="input-firstname"
                             >
-                              First Name
+                             CIN Number
                             </label>
                             <Input
                               className="form-control-alternative"
                               id="input-firstname"
-                              placeholder="First Name"
+                              placeholder="CIN Number"
                               type="text"
                             />
                           </FormGroup>
                         </Col>
-                        <Col lg="6">
-                          <FormGroup>
-                            <label
-                              className="form-control-label"
-                              htmlFor="input-last-name"
-                            >
-                              Last name
-                            </label>
-                            <Input
-                              className="form-control-alternative"
-                              id="input-last-name"
-                              placeholder="Last name"
-                              type="text"
-                            />
-                          </FormGroup>
-                        </Col>
+                        
                       </Row>
                       <Row>
                         <Col lg="6">
@@ -80,12 +102,12 @@ class Profile extends React.Component {
                               className="form-control-label"
                               htmlFor="input-cin"
                             >
-                              CIN Number
+                              First Name
                             </label>
                             <Input
                               className="form-control-alternative"
                               id="input-cin"
-                              placeholder="N° CIN"
+                              placeholder="First Name"
                               type="text"
                             />
                           </FormGroup>
@@ -96,7 +118,50 @@ class Profile extends React.Component {
                               className="form-control-label"
                               htmlFor="input-email"
                             >
-                              Email address
+                              Last Name
+                            </label>
+                            <Input
+                              className="form-control-alternative"
+                              id="input-email"
+                              placeholder="Last Name"
+                              type="email"
+                            />
+                          </FormGroup>
+                        </Col>
+                      </Row>
+                      <Row>
+                        <Col lg="6">
+                          
+                        <FormGroup>
+                        <label
+                              className="form-control-label"
+                              htmlFor="input-email"
+                            >
+                              date of birthday
+                            </label>
+                        <InputGroup className="input-group-alternative">
+                        <InputGroupAddon addonType="prepend">
+                        <InputGroupText>
+                        <i className="ni ni-calendar-grid-58" />
+                      </InputGroupText>
+                        </InputGroupAddon>
+                        <ReactDatetime
+                    inputProps={{
+                      placeholder: "Date Picker Here"
+                    }}
+                    timeFormat={false}
+                  />
+                </InputGroup>
+              </FormGroup>
+
+                        </Col>
+                        <Col lg="6">
+                          <FormGroup>
+                            <label
+                              className="form-control-label"
+                              htmlFor="input-email"
+                            >
+                              E-mail
                             </label>
                             <Input
                               className="form-control-alternative"
@@ -111,9 +176,91 @@ class Profile extends React.Component {
                     <hr className="my-4" />
                     {/* Address */}
                     <h6 className="heading-small text-muted mb-4">
+                      account information
+                    </h6>
+                    <div className="pl-lg-4">
+                    <hr className="my-4" />
+                {/* Account Type */}
+                <h6 className="heading-small text-muted mb-4">Account Type</h6>
+                <div className="pl-lg-4">
+                  <Row>
+                    <Col lg="6" className="text-center">
+                      <Button
+                        outline
+                        color="default"
+                        onClick={this.handleaccount1}
+                        active={this.state.selected === 1}
+                      >
+                        Compte Courant
+                      </Button>
+                    </Col>
+                    <Col lg="6">
+                      <Button
+                        outline
+                        color="default"
+                        onClick={() => {
+                          this.handleaccount2();
+                          this.generateRandomNumber();
+                        }}
+                        active={this.state.selected === 2}
+                      >
+                        Compte Epargne
+                      </Button>
+                    </Col>
+                  </Row>
+                  <Row>
+                    <br/>
+                  </Row>
+                </div>
+                      <Row>
+                        <Col lg="6">
+                          <FormGroup>
+                            <label
+                              className="form-control-label"
+                              htmlFor="input-address"
+                            >
+                              N°compte
+                            </label>
+                            <Input
+                            readOnly="true"
+                              className="form-control-alternative"
+                              id="input-address"
+                              value={this.state.number}
+                              type="text"
+                            />
+                            </FormGroup>
+                            </Col>
+                            <Col lg="6">
+                            <FormGroup>                            
+                            <label
+                              className="form-control-label"
+                              htmlFor="input-address"
+                            >
+                              password
+                            </label>
+                            <Input
+                            readOnly="true"
+                              className="form-control-alternative"
+                              id="input-address"
+                              placeholder="Home Address"
+                              type="text"
+                            />
+                          </FormGroup>
+                        </Col>
+                      </Row>
+                      <Row>
+                      <input type="file" name="file" onChange={this.onChangeHandler}/>
+
+                      </Row>
+                    </div>
+                    {/* Compte */}
+                    <hr className="my-4" />
+                    {/* Address */}
+                    <h6 className="heading-small text-muted mb-4">
                       Contact information
                     </h6>
                     <div className="pl-lg-4">
+                      
                       <Row>
                         <Col md="12">
                           <FormGroup>
@@ -183,6 +330,8 @@ class Profile extends React.Component {
                         </Col>
                       </Row>
                     </div>
+
+
                     <hr className="my-4" />
                     <Button block size="lg" className="btn btn-info outline " type="submit">
                       Create
@@ -198,4 +347,4 @@ class Profile extends React.Component {
   }
 }
 
-export default Profile;
+export default AddClient;
