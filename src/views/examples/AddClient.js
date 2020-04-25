@@ -16,7 +16,7 @@ import {
 // core components
 import UserHeader from "components/Headers/UserHeader.js";
 
-class Profile extends React.Component {
+class AddClient extends React.Component {
   render() {
     return (
       <>
@@ -198,4 +198,4 @@ class Profile extends React.Component {
   }
 }
 
-export default Profile;
+export default AddClient;

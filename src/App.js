@@ -29,7 +29,7 @@ const App = () => {
     routes = (
       <Switch>
         <Route path="/auth" render={(props) => <AuthLayout {...props} />} />
-        <Redirect from="*" to="/auth" />
+        <Redirect to="/auth" />
       </Switch>
     );
 
