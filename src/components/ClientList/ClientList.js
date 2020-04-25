@@ -17,6 +17,11 @@ class ClientList extends React.Component {
     this.clients = this.props.clients;
   }
 
+
+  selectedClient = (client) => {
+    this.props.onShowModal(client);
+  }
+
   render() {
     if (this.clients.length === 0) {
       return (
@@ -53,7 +58,7 @@ class ClientList extends React.Component {
           </td>
 
           <td>
-          {client.cptCrt ? (
+            {client.cptCrt ? (
               <Button outline color="info" type="button">
                 Show Account
               </Button>
@@ -77,14 +82,11 @@ class ClientList extends React.Component {
                 <i className="fas fa-ellipsis-v" />
               </DropdownToggle>
               <DropdownMenu className="dropdown-menu-arrow" right>
-                <DropdownItem href="#pablo" onClick={(e) => e.preventDefault()}>
-                  Action
+                <DropdownItem onClick={(e) => this.selectedClient(client)}>
+                  <i className="ni ni-zoom-split-in" /> Update Informations
                 </DropdownItem>
                 <DropdownItem href="#pablo" onClick={(e) => e.preventDefault()}>
-                  Another action
-                </DropdownItem>
-                <DropdownItem href="#pablo" onClick={(e) => e.preventDefault()}>
-                  Something else here
+                  <i className="ni ni-fat-remove text-red" /> Delete Client
                 </DropdownItem>
               </DropdownMenu>
             </UncontrolledDropdown>

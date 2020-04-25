@@ -15,8 +15,19 @@ import {
 // core components
 
 import ClientList from "components/ClientList/ClientList.js";
+import Modals from "./Modals.js";
 
 class Clients extends React.Component {
+  state = {
+    visible: false,
+    selectedClient: {
+      fullName: "",
+      cin: "",
+      cptEp: false,
+      cptCrt: false,
+    },
+  };
+
   Clients = [
     {
       fullName: "Test 1",
@@ -26,21 +37,36 @@ class Clients extends React.Component {
     },
     {
       fullName: "Test 2",
-      cin: "12456789",
+      cin: "05795456",
       cptEp: true,
       cptCrt: false,
     },
     {
       fullName: "Test 3",
-      cin: "12456789",
+      cin: "215645",
       cptEp: false,
       cptCrt: false,
     },
   ];
 
+  showModal = (client) => {
+    const { selectedClient } = this.state;
+    selectedClient.fullName = client.fullName;
+    selectedClient.cin = client.cin;
+    selectedClient.cptEp = client.cptEp;
+    selectedClient.cptCrt = client.cptCrt;
+    this.setState({ selectedClient });
+    this.setState({ visible: true });
+  };
+
+  closeModal = () => {
+    this.setState({ visible: false });
+  };
+
   render() {
     return (
       <>
+        <Modals show={this.state.visible} handleClose={this.closeModal} client={this.state.selectedClient}/>
         <div className="header bg-gradient-info pb-8 pt-5 pt-md-8">
           <Container fluid>
             <div className="header-body"></div>
@@ -66,7 +92,10 @@ class Clients extends React.Component {
                     </tr>
                   </thead>
                   <tbody>
-                    <ClientList clients={this.Clients} />
+                    <ClientList
+                      clients={this.Clients}
+                      onShowModal={this.showModal}
+                    />
                   </tbody>
                 </Table>
                 <CardFooter className="py-4">

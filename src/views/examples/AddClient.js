@@ -23,6 +23,7 @@ import {
 import UserHeader from "components/Headers/UserHeader.js";
 
 class AddClient extends React.Component {
+<<<<<<< HEAD
   
   state = {
     startDate: new Date(),
@@ -54,6 +55,8 @@ class AddClient extends React.Component {
     this.setState({selected:2})
   }
 
+=======
+>>>>>>> 3333f0bf12c1ffee33582f5f9bc35fb7aba9195d
   render() {
     return (
       <>
