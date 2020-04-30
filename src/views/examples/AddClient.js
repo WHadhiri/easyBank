@@ -106,12 +106,17 @@ class AddClient extends React.Component {
     ) {
       if (this.state.selected === 0) {
         const alertId = StatusAlertService.showError(
-          "You must choose an Account Type (Courant || Epargne)!"
+          "Please choose an Account Type (Courant || Epargne)!"
         );
         this.setState({ alertId: alertId });
       } else if (clientInfo.birthDay.toString() === "Invalid Date") {
         const alertId = StatusAlertService.showError(
-          "You must provide a Birthday!"
+          "Please provide a valid birthday!"
+        );
+        this.setState({ alertId: alertId });
+      } else if ((new Date(clientInfo.birthDay.toString()).getFullYear() - (new Date().getFullYear())) <= 18) {
+        const alertId = StatusAlertService.showError(
+          "Client must be 18 or older!"
         );
         this.setState({ alertId: alertId });
       } else {
@@ -342,7 +347,7 @@ class AddClient extends React.Component {
                               className="form-control-label"
                               htmlFor="input-birthday"
                             >
-                              date of birthday
+                              Birthday
                             </label>
                             <InputGroup className="input-group-alternative">
                               <InputGroupAddon addonType="prepend">
@@ -413,7 +418,7 @@ class AddClient extends React.Component {
                       </h6>
                       <div className="pl-lg-4">
                         <Row>
-                          <Col lg="6" className="text-center">
+                          <Col lg="6" className="text-center mb-3">
                             <Button
                               id="btn-crt"
                               outline
@@ -424,7 +429,7 @@ class AddClient extends React.Component {
                               Compte Courant
                             </Button>
                           </Col>
-                          <Col lg="6">
+                          <Col lg="6" className="text-center mb-3">
                             <Button
                               id="btn-ept"
                               outline
@@ -450,12 +455,13 @@ class AddClient extends React.Component {
                               className="form-control-label"
                               htmlFor="input-address"
                             >
-                              N°compte
+                              Account Number
                             </label>
                             <Input
                               readOnly={true}
                               className="form-control-alternative"
                               id="input-address"
+                              placeholder="Account Number"
                               value={this.state.number}
                               type="text"
                             />
@@ -467,13 +473,13 @@ class AddClient extends React.Component {
                               className="form-control-label"
                               htmlFor="input-address"
                             >
-                              password
+                              Password
                             </label>
                             <Input
                               readOnly={true}
                               className="form-control-alternative"
                               id="input-address"
-                              placeholder="Home Address"
+                              placeholder="CSC (Card Security Code)"
                               type="text"
                             />
                           </FormGroup>
