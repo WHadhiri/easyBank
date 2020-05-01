@@ -1,5 +1,4 @@
 import Index from "views/Index.js";
-import Register from "views/examples/Register.js";
 import Login from "views/examples/Login.js";
 import AddClient from "views/examples/AddClient.js";
 import Clients from "views/examples/Clients.js";

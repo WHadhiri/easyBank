@@ -1,27 +1,11 @@
 import React from "react";
-import ReactDatetime from "react-datetime";
 import "react-status-alert/dist/status-alert.css";
 import { withRouter } from "react-router-dom";
 
 // reactstrap components
-import {
-  Button,
-  Card,
-  CardHeader,
-  CardBody,
-  FormGroup,
-  Form,
-  Input,
-  Container,
-  Row,
-  Col,
-  InputGroup,
-  InputGroupAddon,
-  InputGroupText,
-  FormFeedback,
-} from "reactstrap";
+import { Card, CardHeader, CardBody, Container, Row, Col } from "reactstrap";
 
-import StatusAlert, { StatusAlertService } from "react-status-alert";
+//import StatusAlert, { StatusAlertService } from "react-status-alert";
 
 // core components
 import AccountHeader from "components/Headers/AccountHeader.js";
@@ -47,22 +31,23 @@ class Accounts extends React.Component {
       cin: "215645",
       cptEp: false,
       cptCrt: false,
-      balance: -200,
+      balance: null,
     },
   ];
 
   getClientBalance = () => {
-    return this.Clients.map(client => {
-      return client.cin === this.props.match.params.userCin ? client.balance : null;
-    })[0];
-  }
+    const userCin = this.props.match.params.userCin;
+    let balance = null;
+    this.Clients.forEach((client) => client.cin === userCin ? balance = client.balance : null );
+    return balance;
+  };
 
   render() {
     return (
       <>
-        <AccountHeader balance={this.getClientBalance()}/>
+        <AccountHeader balance={this.getClientBalance()} />
         {/* Page content */}
-        <StatusAlert />
+        {/*<StatusAlert />*/}
         <Container className="mt--5" fluid>
           <Row className="justify-content-center">
             <Col className="order-xl-1" xl="10">

@@ -29,7 +29,7 @@ class AccountHeader extends React.Component {
                         </div>
                         <Col className="col-auto">
                           <div className="icon icon-shape bg-success text-white rounded-circle shadow">
-                            <i class="fas fa-money-check-alt"/>
+                            <i className="fas fa-money-check-alt"/>
                           </div>
                         </Col>
                       </Row>
