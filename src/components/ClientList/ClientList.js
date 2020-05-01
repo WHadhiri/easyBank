@@ -1,4 +1,5 @@
 import React from "react";
+import { Link } from "react-router-dom";
 
 // reactstrap components
 import {
@@ -17,10 +18,9 @@ class ClientList extends React.Component {
     this.clients = this.props.clients;
   }
 
-
   selectedClient = (client) => {
     this.props.onShowModal(client);
-  }
+  };
 
   render() {
     if (this.clients.length === 0) {
@@ -37,7 +37,7 @@ class ClientList extends React.Component {
 
     return this.clients.map((client) => {
       return (
-        <tr>
+        <tr key={client.cin}>
           <th scope="row">
             <Media className="align-items-center">
               <span className="mb-0 text-sm">{client.fullName}</span>
@@ -46,7 +46,13 @@ class ClientList extends React.Component {
           <td>{client.cin}</td>
           <td>
             {client.cptEp ? (
-              <Button outline color="info" type="button">
+              <Button
+                outline
+                color="info"
+                type="button"
+                tag={Link}
+                to={`/admin/accounts/${client.cin}/`}
+              >
                 Show Account
               </Button>
             ) : (
@@ -59,7 +65,13 @@ class ClientList extends React.Component {
 
           <td>
             {client.cptCrt ? (
-              <Button outline color="info" type="button">
+              <Button
+                outline
+                color="info"
+                type="button"
+                tag={Link}
+                to={`/admin/accounts/${client.cin}/`}
+              >
                 Show Account
               </Button>
             ) : (

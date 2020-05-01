@@ -3,6 +3,7 @@ import Register from "views/examples/Register.js";
 import Login from "views/examples/Login.js";
 import AddClient from "views/examples/AddClient.js";
 import Clients from "views/examples/Clients.js";
+import Accounts from "views/examples/Accounts.js";
 
 var routes = [
   {
@@ -27,18 +28,18 @@ var routes = [
     layout: "/admin"
   },
   {
-    path: "/closeAccount",
-    name: "Close Account",
-    icon: "ni ni-fat-delete text-red",
-    component: Register,
-    layout: "/admin"
-  },
-  {
     path: "/login",
     name: "Login",
     icon: "ni ni-tv-2 text-primary",
     component: Login,
     layout: "/auth"
+  },
+  {
+    path: "/accounts/:userCin/",
+    name: "Accounts",
+    component: Accounts,
+    layout: "/admin",
+    exact: true
   },
 ];
 export default routes;
