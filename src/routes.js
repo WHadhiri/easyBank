@@ -57,6 +57,5 @@ var routes = [
     exact: true
   },
 
-
 ];
 export default routes;
