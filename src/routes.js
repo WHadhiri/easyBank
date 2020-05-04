@@ -2,8 +2,9 @@ import Index from "views/Index.js";
 import Login from "views/examples/Login.js";
 import AddClient from "views/examples/AddClient.js";
 import Clients from "views/examples/Clients.js";
+import AccountD from "views/examples/AccountD";
+import Accounts from "views/examples/Accounts";
 import Operation from "views/examples/Operation";
-
 var routes = [
   {
     path: "/index",
@@ -27,10 +28,10 @@ var routes = [
     layout: "/admin"
   },
   {
-    path: "/closeAccount",
+    path: "/account-detail",
     name: "Account detail",
     icon: "ni ni-fat-delete text-red",
-    component: Operation,
+    component: AccountD,
     layout: "/admin"
   },
   {
@@ -47,5 +48,15 @@ var routes = [
     layout: "/admin",
     exact: true
   },
+  {
+    path: "/operation",
+    name: "Operation",
+    icon: "ni ni-money-coins",
+    component: Operation,
+    layout: "/admin",
+    exact: true
+  },
+
+  
 ];
 export default routes;
