@@ -1,8 +1,8 @@
 import Index from "views/Index.js";
-import Register from "views/examples/Register.js";
 import Login from "views/examples/Login.js";
 import AddClient from "views/examples/AddClient.js";
 import Clients from "views/examples/Clients.js";
+import Operation from "views/examples/Operation";
 
 var routes = [
   {
@@ -28,9 +28,9 @@ var routes = [
   },
   {
     path: "/closeAccount",
-    name: "Close Account",
+    name: "Account detail",
     icon: "ni ni-fat-delete text-red",
-    component: Register,
+    component: Operation,
     layout: "/admin"
   },
   {
