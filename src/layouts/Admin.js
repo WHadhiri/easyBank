@@ -1,20 +1,3 @@
-/*!
-
-=========================================================
-* Argon Dashboard React - v1.1.0
-=========================================================
-
-* Product Page: https://www.creative-tim.com/product/argon-dashboard-react
-* Copyright 2019 Creative Tim (https://www.creative-tim.com)
-* Licensed under MIT (https://github.com/creativetimofficial/argon-dashboard-react/blob/master/LICENSE.md)
-
-* Coded by Creative Tim
-
-=========================================================
-
-* The above copyright notice and this permission notice shall be included in all copies or substantial portions of the Software.
-
-*/
 import React from "react";
 import { Route, Switch, Redirect } from "react-router-dom";
 // reactstrap components
@@ -32,7 +15,7 @@ class Admin extends React.Component {
     document.scrollingElement.scrollTop = 0;
     this.refs.mainContent.scrollTop = 0;
   }
-  getRoutes = routes => {
+  getRoutes = (routes) => {
     return routes.map((prop, key) => {
       if (prop.layout === "/admin") {
         return (
@@ -47,11 +30,17 @@ class Admin extends React.Component {
       }
     });
   };
-  getBrandText = path => {
+  getBrandText = (path) => {
     for (let i = 0; i < routes.length; i++) {
       if (
         this.props.location.pathname.indexOf(
           routes[i].layout + routes[i].path
+        ) !== -1
+      ) {
+        return routes[i].name;
+      } else if (
+        this.props.location.pathname.indexOf(
+          (routes[i].path).substr(0, 10)
         ) !== -1
       ) {
         return routes[i].name;
@@ -64,11 +53,13 @@ class Admin extends React.Component {
       <>
         <Sidebar
           {...this.props}
-          routes={routes.filter(route => route.layout !== "/auth")}
+          routes={routes.filter(
+            (route) => route.layout !== "/auth" && route.name !== "Accounts"
+          )}
           logo={{
             innerLink: "/admin/index",
             imgSrc: require("assets/img/brand/logo.png"),
-            imgAlt: "..."
+            imgAlt: "...",
           }}
         />
         <div className="main-content" ref="mainContent">

@@ -34,18 +34,21 @@ class Clients extends React.Component {
       cin: "12456789",
       cptEp: false,
       cptCrt: true,
+      balance: 1000,
     },
     {
       fullName: "Test 2",
       cin: "05795456",
       cptEp: true,
       cptCrt: false,
+      balance: 500,
     },
     {
       fullName: "Test 3",
       cin: "215645",
       cptEp: false,
       cptCrt: false,
+      balance: -200,
     },
   ];
 

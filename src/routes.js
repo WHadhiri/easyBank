@@ -40,5 +40,12 @@ var routes = [
     component: Login,
     layout: "/auth"
   },
+  {
+    path: "/accounts/:userCin/",
+    name: "Accounts",
+    component: Accounts,
+    layout: "/admin",
+    exact: true
+  },
 ];
 export default routes;
