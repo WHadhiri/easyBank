@@ -30,7 +30,7 @@ var routes = [
   {
     path: "/account-detail",
     name: "Account detail",
-    icon: "ni ni-fat-delete text-red",
+    icon: "ni ni-credit-card text-red",
     component: AccountD,
     layout: "/admin"
   },
