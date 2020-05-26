@@ -13,6 +13,7 @@ import {
   Input,
   Row,
   Col,
+  Modal,
   ButtonDropdown,
   DropdownToggle,
   DropdownMenu,
@@ -28,9 +29,22 @@ class Operation extends React.Component {
   state = {
     dropdownOpen: false,
     showOp: 0,
+    defaultModal: false,
+    test : false
   };
   toggle = () => {
     this.setState({ dropdownOpen: !this.state.dropdownOpen });
+  };
+  toggleModal = state => {
+    this.setState({
+      [state]: !this.state[state]
+    });
+  };
+  NOTorVER = () =>{
+    if(this.state.test === false)
+     this.toggleModal("notificationModal")
+else
+this.toggleModal("defaultModal")
   };
 
   render() {
@@ -158,15 +172,112 @@ class Operation extends React.Component {
                         </Col>
                         <Col lg="6"></Col>
                         <Col sm="12" md={{ size: 6, offset: 3 }}>
-                          <Button
-                            block
+                          <Button     
+                            block                     
                             size="md"
                             className="btn btn-info outline "
-                            type="submit"
+                            type="button"
+                            onClick={this.NOTorVER}
                           >
                             Deposit
                           </Button>
                         </Col>
+                        
+                      
+                        <Modal
+              className="modal-dialog-centered"
+              isOpen={this.state.defaultModal}
+              toggle={() => this.toggleModal("defaultModal")}
+            >
+              <div className="modal-header">
+                <h6 className="modal-title" id="modal-title-default">
+                  Information
+                </h6>
+                <button
+                  aria-label="Close"
+                  className="close"
+                  data-dismiss="modal"
+                  type="button"
+                  onClick={() => this.toggleModal("defaultModal")}
+                >
+                  <span aria-hidden={true}>×</span>
+                </button>
+              </div>
+              <div className="modal-body">
+              <Row>
+                <Col>
+              <label
+                className="form-control-label"
+                htmlFor="input-cin"
+                          >
+                          Account balance
+                          </label>
+                <Input disabled placeholder="Name" type="text" />
+                </Col>
+              </Row>
+              </div>
+              <div className="modal-footer">
+                <Button color="primary" type="button">
+                  GOT it
+                </Button>
+                <Button
+                  className="ml-auto"
+                  color="link"
+                  data-dismiss="modal"
+                  type="button"
+                  onClick={() => this.toggleModal("defaultModal")}
+                >
+                  Close
+                </Button>
+              </div>
+            </Modal>
+          
+            <Modal
+              className="modal-dialog-centered modal-danger"
+              contentClassName="bg-gradient-danger"
+              isOpen={this.state.notificationModal}
+              toggle={() => this.toggleModal("notificationModal")}
+            >
+              <div className="modal-header">
+                <h6 className="modal-title" id="modal-title-notification">
+                  Your attention is required
+                </h6>
+                <button
+                  aria-label="Close"
+                  className="close"
+                  data-dismiss="modal"
+                  type="button"
+                  onClick={() => this.toggleModal("notificationModal")}
+                >
+                  <span aria-hidden={true}>×</span>
+                </button>
+              </div>
+              <div className="modal-body">
+                <div className="py-3 text-center">
+                  <i className="ni ni-bell-55 ni-3x" />
+                  <h4 className="heading mt-4">You should read this!</h4>
+                  <p>
+                  you should verify your account status before you can pass this transaction
+                  </p>
+                </div>
+              </div>
+              <div className="modal-footer">
+                <Button className="btn-white" color="default" type="button">
+                  Ok, Got it
+                </Button>
+                <Button
+                  className="text-white ml-auto"
+                  color="link"
+                  data-dismiss="modal"
+                  type="button"
+                  onClick={() => this.toggleModal("notificationModal")}
+                >
+                  Close
+                </Button>
+              </div>
+            </Modal>
+            
+           
                       </Row>
                     )}
                     {this.state.showOp === 2 && (
@@ -253,6 +364,7 @@ class Operation extends React.Component {
                             Transfer
                           </Button>
                         </Col>
+                        
                       </Row>
                     )}
                   </Form>
