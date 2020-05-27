@@ -1,5 +1,6 @@
 const mongoose = require('mongoose');
-var Schema = mongoose.Schema;
+
+const Account = require("../models/account");
 
 const clientSchema = new mongoose.Schema({
     cin: {type: String, required: true},
@@ -13,7 +14,7 @@ const clientSchema = new mongoose.Schema({
         country: {type: String, required: true},
         postalCode: {type: String, required: true},
     },
-    numacc: {type: String, required: true},
+    accounts: [{type: mongoose.Types.ObjectId, required: true, ref: 'Account'}]
 });
 
 module.exports = mongoose.model('Client', clientSchema);

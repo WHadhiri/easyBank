@@ -8,5 +8,6 @@ router.get("/", clientController.getClients);
 router.get("/:cin", clientController.getClientByCin);
 
 router.post("/", clientController.addClient);
+router.patch("/:cin", clientController.updateClient)
 
 module.exports = router;

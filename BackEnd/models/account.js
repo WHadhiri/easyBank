@@ -4,12 +4,13 @@ var Schema = mongoose.Schema;
 const accountSchema = new mongoose.Schema({
     numacc: {type: String, required: true},
     typeofaccount: {type: String, required: true},
-    status: {type: Boolean, required: true},
-    dateop: {type: Date, required: true},
-    datefund: {type: Date, required: true},
-    dateclosed: {type: Date, required: true},
-    lasttrans: {type: String, required: true},
-    overallAmount: {type: String, required: true}
+    status: {type: String, required: true},
+    dateop: {type: Date,  default: new Date()},
+    datefund: {type: Date,  default: null},
+    dateclosed: {type: Date, default: null},
+    lasttrans: {type: String,  default: null},
+    overallAmount: {type: Number,  default: 0.0},
+    owner: {type: mongoose.Types.ObjectId, ref: 'Client', default: null}
     
 });
 
