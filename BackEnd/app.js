@@ -3,13 +3,15 @@ const bodyParser = require("body-parser");
 const mongoose = require("mongoose");
 
 const clientRoutes = require("./routes/clients-routes");
-
+const accountRoutes = require("./routes/Accounts_routes");
+const transRoutes = require("./routes/Transactions_routes");
 const app = express();
 
 app.use(bodyParser.json());
 
+app.use("/api/accounts", accountRoutes);
 app.use("/api/clients", clientRoutes);
-
+app.use("/api/trans", transRoutes);
 app.use((req, res, next) => {
   const error = new Error("could not found this route.");
   error.code = 404;
