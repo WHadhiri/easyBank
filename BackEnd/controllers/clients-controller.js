@@ -3,7 +3,6 @@ const mongoose = require("mongoose");
 const AccountController = require("../controllers/accounts_controller");
 
 const Client = require("../models/client");
-const Account = require("../models/account");
 
 const getClients = async (req, res, next) => {
   let clients;
@@ -60,13 +59,11 @@ const addClient = async (req, res, next) => {
     accounts: [],
   });
 
-  let newAccount;
-  let newClient;
   try {
     const sess = await mongoose.startSession();
     sess.startTransaction();
     await createdClient.save({ session: sess });
-    AccountController.addAccount(createdClient,account, res, next);
+    AccountController.addAccount(createdClient, account, res, next);
     await sess.commitTransaction();
   } catch (err) {
     const error = new Error("Creating client failed. Please try again!");
