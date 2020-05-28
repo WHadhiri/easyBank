@@ -53,5 +53,7 @@ const getTransByNum = async (req, res, next) => {
   
     res.status(201).json({ newTrans: createdTrans });
   };
+  
+
   exports.addTrans = addTrans;
   exports.getTransByNum = getTransByNum;

@@ -6,9 +6,9 @@ const transactionSchema = new mongoose.Schema({
     typeofTrans: {type: String, required: true},
     nameTrans: {type: String, required: true},
     dateTrans: {type: Date, required: true},
-    debit: {type: Date, required: true},
-    credit: {type: Date, required: true},
-    balance: {type: Date, required: true},
+    debit: {type: String, required: true},
+    credit: {type: String, required: true},
+    balance: {type: String, required: true},
     numacc: {type: String, required: true},
 });
 
