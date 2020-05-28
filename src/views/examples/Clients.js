@@ -1,4 +1,5 @@
 import React from "react";
+import "../../index.css";
 
 // reactstrap components
 import {
@@ -11,6 +12,13 @@ import {
   Table,
   Container,
   Row,
+  Col,
+  Form,
+  FormGroup,
+  InputGroup,
+  InputGroupAddon,
+  InputGroupText,
+  Input,
 } from "reactstrap";
 // core components
 
@@ -69,7 +77,11 @@ class Clients extends React.Component {
   render() {
     return (
       <>
-        <Modals show={this.state.visible} handleClose={this.closeModal} client={this.state.selectedClient}/>
+        <Modals
+          show={this.state.visible}
+          handleClose={this.closeModal}
+          client={this.state.selectedClient}
+        />
         <div className="header bg-gradient-info pb-8 pt-5 pt-md-8">
           <Container fluid>
             <div className="header-body"></div>
@@ -82,7 +94,25 @@ class Clients extends React.Component {
             <div className="col">
               <Card className="shadow">
                 <CardHeader className="border-0">
-                  <h3 className="mb-0">Client List</h3>
+                  <Row>
+                    <Col className="my-3">
+                      <h3 className="mb-0">Client List</h3>
+                    </Col>
+                    <Col className="mr--9">
+                      <Form className="navbar-search navbar-search-dark form-inline mr-3 d-none d-md-flex ml-lg-auto">
+                        <FormGroup className="mb-0">
+                          <InputGroup className="input-group-alternative">
+                            <InputGroupAddon addonType="prepend">
+                              <InputGroupText>
+                                <i className="fas fa-search text-teal" />
+                              </InputGroupText>
+                            </InputGroupAddon>
+                            <Input className="searchInput" placeholder="Search" type="text" />
+                          </InputGroup>
+                        </FormGroup>
+                      </Form>
+                    </Col>
+                  </Row>
                 </CardHeader>
                 <Table className="align-items-center table-flush" responsive>
                   <thead className="thead-light">

@@ -9,3 +9,20 @@ html {
 body {
   margin: 0;
 }
+
+.searchInput{
+  color: black !important;
+  
+}
+
+.searchInput::-webkit-input-placeholder{
+  color: gray !important;
+}
+
+.searchInput::-moz-placeholder{
+  color: gray !important;
+}
+
+.searchInput::-ms-input-placeholder{
+  color: gray !important;
+}
