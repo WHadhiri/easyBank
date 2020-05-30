@@ -27,6 +27,8 @@ import Modals from "./Modals.js";
 
 class Clients extends React.Component {
   state = {
+    Clients: [],
+    clientAccounts: [],
     visible: false,
     selectedClient: {
       fullName: "",
@@ -34,31 +36,8 @@ class Clients extends React.Component {
       cptEp: false,
       cptCrt: false,
     },
+    isLoading: false,
   };
-
-  Clients = [
-    {
-      fullName: "Test 1",
-      cin: "12456789",
-      cptEp: false,
-      cptCrt: true,
-      balance: 1000,
-    },
-    {
-      fullName: "Test 2",
-      cin: "05795456",
-      cptEp: true,
-      cptCrt: false,
-      balance: 500,
-    },
-    {
-      fullName: "Test 3",
-      cin: "215645",
-      cptEp: false,
-      cptCrt: false,
-      balance: -200,
-    },
-  ];
 
   showModal = (client) => {
     const { selectedClient } = this.state;
@@ -74,7 +53,52 @@ class Clients extends React.Component {
     this.setState({ visible: false });
   };
 
+  async componentDidMount() {
+    this.setState({ isLoading: true });
+    await this.fetchClients();
+    await this.fetchClientAccounts();
+    this.setState({ isLoading: false });
+  }
+
+  async fetchClients() {
+    try {
+      const response = await fetch("http://localhost:5000/api/clients");
+      const data = await response.json();
+
+      if (!response.ok) throw new Error(data.message);
+      this.setState({ Clients: data.clients });
+    } catch (error) {
+      console.log(error.message);
+    }
+  }
+  async fetchClientAccounts() {
+    let accounts = [];
+    this.state.Clients.forEach((client) => {
+      client.accounts.forEach(async (account) => {
+        try {
+          const response = await fetch(
+            `http://localhost:5000/api/accounts/${account}`
+          );
+          const data = await response.json();
+          if (!response.ok) throw new Error(data.message);
+          accounts.push({
+            clientID: data.account.owner,
+            account: data.account,
+          });
+        } catch (error) {
+          console.log(error.message);
+        }
+      });
+    });
+    this.setState({ clientAccounts: accounts });
+  }
+
   render() {
+    const { Clients, isLoading, clientAccounts } = this.state;
+    if (isLoading) {
+      return <p>Loading ...</p>;
+    }
+
     return (
       <>
         <Modals
@@ -107,7 +131,11 @@ class Clients extends React.Component {
                                 <i className="fas fa-search text-teal" />
                               </InputGroupText>
                             </InputGroupAddon>
-                            <Input className="searchInput" placeholder="Search" type="text" />
+                            <Input
+                              className="searchInput"
+                              placeholder="Search"
+                              type="text"
+                            />
                           </InputGroup>
                         </FormGroup>
                       </Form>
@@ -125,10 +153,13 @@ class Clients extends React.Component {
                     </tr>
                   </thead>
                   <tbody>
-                    <ClientList
-                      clients={this.Clients}
-                      onShowModal={this.showModal}
-                    />
+                    {!this.state.isLoading && Clients && clientAccounts && (
+                      <ClientList
+                        clients={Clients}
+                        clientAcc={clientAccounts}
+                        onShowModal={this.showModal}
+                      />
+                    )}
                   </tbody>
                 </Table>
                 <CardFooter className="py-4">

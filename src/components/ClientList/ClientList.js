@@ -13,17 +13,33 @@ import {
 } from "reactstrap";
 
 class ClientList extends React.Component {
-  constructor(props) {
-    super(props);
-    this.clients = this.props.clients;
-  }
+  state = {
+    clients: this.props.clients,
+    clientAccounts: this.props.clientAcc,
+  };
 
   selectedClient = (client) => {
     this.props.onShowModal(client);
   };
 
+  static getDerivedStateFromProps(props, state) {
+    if (
+      props.clientAcc !== state.clientAccounts &&
+      props.clients !== state.clients
+    ) {
+      return {
+        clients: props.clients,
+        clientAccounts: props.clientAcc,
+      };
+    }
+
+    // Return null to indicate no change to state.
+    return null;
+  }
+
   render() {
-    if (this.clients.length === 0) {
+    const { clients, clientAccounts } = this.state;
+    if (clients.length === 0) {
       return (
         <tr>
           <th scope="row">
@@ -34,18 +50,19 @@ class ClientList extends React.Component {
         </tr>
       );
     }
-
-    return this.clients.map((client) => {
+    return clients.map((client) => {
       return (
-        <tr key={client.cin}>
+        <tr key={client.id}>
           <th scope="row">
             <Media className="align-items-center">
-              <span className="mb-0 text-sm">{client.fullName}</span>
+              <span className="mb-0 text-sm">
+                {client.firstname + " " + client.lastname}
+              </span>
             </Media>
           </th>
           <td>{client.cin}</td>
           <td>
-            {client.cptEp ? (
+            {clientAccounts.length !== 0 ? (
               <Button
                 outline
                 color="info"
@@ -64,7 +81,7 @@ class ClientList extends React.Component {
           </td>
 
           <td>
-            {client.cptCrt ? (
+            {client.accounts.map((acc) => acc.typeofaccount === "Courant") ? (
               <Button
                 outline
                 color="info"
