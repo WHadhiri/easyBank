@@ -22,22 +22,26 @@ import {
 } from "reactstrap";
 // core components
 
-import ClientList from "components/ClientList/ClientList.js";
 import Modals from "./Modals.js";
 
+import ClientList from "components/ClientList/ClientList.js";
+
 class Clients extends React.Component {
-  state = {
-    Clients: [],
-    clientAccounts: [],
-    visible: false,
-    selectedClient: {
-      fullName: "",
-      cin: "",
-      cptEp: false,
-      cptCrt: false,
-    },
-    isLoading: false,
-  };
+  constructor(props) {
+    super(props);
+    this.state = {
+      Clients: [],
+      clientAccounts: [],
+      visible: false,
+      selectedClient: {
+        fullName: "",
+        cin: "",
+        cptEp: false,
+        cptCrt: false,
+      },
+      isLoading: false,
+    };
+  }
 
   showModal = (client) => {
     const { selectedClient } = this.state;
@@ -72,26 +76,41 @@ class Clients extends React.Component {
     }
   }
   async fetchClientAccounts() {
-    let accounts = [];
-    this.state.Clients.forEach((client) => {
-      client.accounts.forEach(async (account) => {
-        try {
-          const response = await fetch(
-            `http://localhost:5000/api/accounts/${account}`
-          );
-          const data = await response.json();
-          if (!response.ok) throw new Error(data.message);
-          accounts.push({
-            clientID: data.account.owner,
-            account: data.account,
+    this.state.Clients.forEach(async (client) => {
+      try {
+        const response = await fetch(
+          `http://localhost:5000/api/accounts/${client.id}/accounts`
+        );
+        const data = await response.json();
+        if (!response.ok) throw new Error(data.message);
+        data.accounts.forEach((item) => {
+          const { id, typeofaccount } = item;
+          this.setState({
+            clientAccounts: [
+              ...this.state.clientAccounts,
+              { owner: client.id, idaccount: id, type: typeofaccount },
+            ],
           });
-        } catch (error) {
-          console.log(error.message);
-        }
-      });
+        });
+      } catch (error) {
+        console.log(error.message);
+      }
     });
-    this.setState({ clientAccounts: accounts });
   }
+
+  checkAccount = (id, type) => {
+    //this.state.clientAccounts.forEach((item) => console.log(item.type));
+    console.log(
+      this.state.clientAccounts.filter(
+        (item) => item.type === type && item.owner === id
+      ).length
+    );
+    return this.state.clientAccounts.filter(
+      (item) => item.type === type && item.owner === id
+    ).length > 0
+      ? true
+      : false;
+  };
 
   render() {
     const { Clients, isLoading, clientAccounts } = this.state;
@@ -158,6 +177,7 @@ class Clients extends React.Component {
                         clients={Clients}
                         clientAcc={clientAccounts}
                         onShowModal={this.showModal}
+                        checkAccount={this.checkAccount}
                       />
                     )}
                   </tbody>

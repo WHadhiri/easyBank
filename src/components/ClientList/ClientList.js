@@ -13,13 +13,22 @@ import {
 } from "reactstrap";
 
 class ClientList extends React.Component {
-  state = {
-    clients: this.props.clients,
-    clientAccounts: this.props.clientAcc,
-  };
+  constructor(props) {
+    super(props);
+    this.state = {
+      clients: this.props.clients,
+      clientAccounts: this.props.clientAcc,
+      accountExist: this.props.accountExist,
+    };
+  }
 
   selectedClient = (client) => {
     this.props.onShowModal(client);
+  };
+
+  checkAccountType = (id, type) => {
+    //console.log(this.props.checkAccount(id, type));
+    return this.props.checkAccount(id, type);
   };
 
   static getDerivedStateFromProps(props, state) {
@@ -32,13 +41,12 @@ class ClientList extends React.Component {
         clientAccounts: props.clientAcc,
       };
     }
-
     // Return null to indicate no change to state.
     return null;
   }
 
   render() {
-    const { clients, clientAccounts } = this.state;
+    const { clients } = this.state;
     if (clients.length === 0) {
       return (
         <tr>
@@ -62,7 +70,7 @@ class ClientList extends React.Component {
           </th>
           <td>{client.cin}</td>
           <td>
-            {clientAccounts.length !== 0 ? (
+            {this.checkAccountType(client.id, "Epargne") ? (
               <Button
                 outline
                 color="info"
@@ -81,7 +89,7 @@ class ClientList extends React.Component {
           </td>
 
           <td>
-            {client.accounts.map((acc) => acc.typeofaccount === "Courant") ? (
+            {this.checkAccountType(client.id, "Courant") ? (
               <Button
                 outline
                 color="info"
