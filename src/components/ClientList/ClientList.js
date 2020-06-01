@@ -17,7 +17,7 @@ class ClientList extends React.Component {
     super(props);
     this.state = {
       clients: this.props.clients,
-      clientAccounts: this.props.clientAcc,
+      clientAccount: this.props.clientAcc,
       accountExist: this.props.accountExist,
     };
   }
@@ -27,18 +27,23 @@ class ClientList extends React.Component {
   };
 
   checkAccountType = (id, type) => {
-    //console.log(this.props.checkAccount(id, type));
-    return this.props.checkAccount(id, type);
+    const { isType } = this.props.checkAccount(id, type);
+    return isType;
+  };
+
+  getClientAccount = (id, type) => {
+    const { account } = this.props.checkAccount(id, type);
+    return account;
   };
 
   static getDerivedStateFromProps(props, state) {
     if (
-      props.clientAcc !== state.clientAccounts &&
+      props.clientAcc !== state.clientAccount &&
       props.clients !== state.clients
     ) {
       return {
         clients: props.clients,
-        clientAccounts: props.clientAcc,
+        clientAccount: props.clientAcc,
       };
     }
     // Return null to indicate no change to state.
@@ -76,7 +81,9 @@ class ClientList extends React.Component {
                 color="info"
                 type="button"
                 tag={Link}
-                to={`/admin/accounts/${client.cin}/`}
+                to={`/admin/account/${
+                  this.getClientAccount(client.id, "Epargne").idaccount
+                }/${client.firstname + " " + client.lastname}`}
               >
                 Show Account
               </Button>
@@ -95,7 +102,9 @@ class ClientList extends React.Component {
                 color="info"
                 type="button"
                 tag={Link}
-                to={`/admin/accounts/${client.cin}/`}
+                to={`/admin/account/${
+                  this.getClientAccount(client.id, "Courant").idaccount
+                }/${client.firstname + " " + client.lastname}`}
               >
                 Show Account
               </Button>

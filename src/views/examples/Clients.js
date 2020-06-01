@@ -99,18 +99,24 @@ class Clients extends React.Component {
   }
 
   checkAccount = (id, type) => {
-    //this.state.clientAccounts.forEach((item) => console.log(item.type));
-    console.log(
-      this.state.clientAccounts.filter(
+    /*console.log(
+      this.state.clientAccounts
+        .filter((item) => item.type === type && item.owner === id)
+        .pop()
+    );*/
+    return {
+      isType: this.state.clientAccounts.filter(
         (item) => item.type === type && item.owner === id
-      ).length
-    );
-    return this.state.clientAccounts.filter(
-      (item) => item.type === type && item.owner === id
-    ).length > 0
-      ? true
-      : false;
+      ).length > 0
+        ? true
+        : false,
+      account: this.state.clientAccounts
+      .filter((item) => item.type === type && item.owner === id)
+      .pop()
+    }
   };
+
+  getAccount = () => {};
 
   render() {
     const { Clients, isLoading, clientAccounts } = this.state;
@@ -175,7 +181,7 @@ class Clients extends React.Component {
                     {!this.state.isLoading && Clients && clientAccounts && (
                       <ClientList
                         clients={Clients}
-                        clientAcc={clientAccounts}
+                        clientAcc={this.getAccount}
                         onShowModal={this.showModal}
                         checkAccount={this.checkAccount}
                       />

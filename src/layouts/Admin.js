@@ -39,9 +39,8 @@ class Admin extends React.Component {
       ) {
         return routes[i].name;
       } else if (
-        this.props.location.pathname.indexOf(
-          (routes[i].path).substr(0, 10)
-        ) !== -1
+        this.props.location.pathname.indexOf(routes[i].path.substr(0, 10)) !==
+        -1
       ) {
         return routes[i].name;
       }
@@ -54,7 +53,9 @@ class Admin extends React.Component {
         <Sidebar
           {...this.props}
           routes={routes.filter(
-            (route) => route.layout !== "/auth" && route.name !== "Accounts"
+            (route) =>
+              route.layout !== "/auth" &&
+              (route.name !== "Accounts" && route.name !== "Account detail")
           )}
           logo={{
             innerLink: "/admin/index",

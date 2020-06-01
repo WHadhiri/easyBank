@@ -28,7 +28,7 @@ var routes = [
     layout: "/admin"
   },
   {
-    path: "/account-detail",
+    path: "/account/:accID/:clientName",
     name: "Account detail",
     icon: "ni ni-credit-card text-red",
     component: AccountD,
