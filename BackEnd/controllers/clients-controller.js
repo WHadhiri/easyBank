@@ -49,6 +49,22 @@ const addClient = async (req, res, next) => {
     contact,
     account,
   } = req.body;
+
+  let existingClient;
+  try {
+    existingClient = await Client.findOne({ cin: cin });
+  } catch (error) {
+    const err = new Error("Somthing went wrong. Please try again");
+    err.code = 500;
+    return next(err);
+  }
+
+  if (existingClient) {
+    const err = new Error("Client already exist, please check Clients List.");
+    err.code = 500;
+    return next(err);
+  }
+
   const createdClient = new Client({
     firstname,
     lastname,

@@ -1,4 +1,5 @@
 import React from "react";
+import { GuardSpinner } from "react-spinners-kit";
 import "../../index.css";
 
 // reactstrap components
@@ -19,6 +20,7 @@ import {
   InputGroupAddon,
   InputGroupText,
   Input,
+  CardBody,
 } from "reactstrap";
 // core components
 
@@ -40,6 +42,8 @@ class Clients extends React.Component {
         cptCrt: false,
       },
       isLoading: false,
+      filteredData: [],
+      searchInput: "",
     };
   }
 
@@ -99,30 +103,41 @@ class Clients extends React.Component {
   }
 
   checkAccount = (id, type) => {
-    /*console.log(
-      this.state.clientAccounts
-        .filter((item) => item.type === type && item.owner === id)
-        .pop()
-    );*/
     return {
-      isType: this.state.clientAccounts.filter(
-        (item) => item.type === type && item.owner === id
-      ).length > 0
-        ? true
-        : false,
+      isType:
+        this.state.clientAccounts.filter(
+          (item) => item.type === type && item.owner === id
+        ).length > 0
+          ? true
+          : false,
       account: this.state.clientAccounts
-      .filter((item) => item.type === type && item.owner === id)
-      .pop()
-    }
+        .filter((item) => item.type === type && item.owner === id)
+        .pop(),
+    };
   };
 
-  getAccount = () => {};
+  filterClient = (event) => {
+    this.setState({ searchInput: event.target.value }, () => {
+      this.filterTable();
+    });
+  };
+
+  filterTable = () => {
+    let { Clients, searchInput } = this.state;
+    let filteredData = Clients.filter((value) => {
+      return value.cin.includes(searchInput);
+    });
+    this.setState({ filteredData: filteredData });
+  };
 
   render() {
-    const { Clients, isLoading, clientAccounts } = this.state;
-    if (isLoading) {
-      return <p>Loading ...</p>;
-    }
+    const {
+      Clients,
+      isLoading,
+      clientAccounts,
+      searchInput,
+      filteredData,
+    } = this.state;
 
     return (
       <>
@@ -158,8 +173,10 @@ class Clients extends React.Component {
                             </InputGroupAddon>
                             <Input
                               className="searchInput"
-                              placeholder="Search"
+                              placeholder="Search By CIN"
                               type="text"
+                              value={searchInput || ""}
+                              onChange={this.filterClient}
                             />
                           </InputGroup>
                         </FormGroup>
@@ -167,79 +184,98 @@ class Clients extends React.Component {
                     </Col>
                   </Row>
                 </CardHeader>
-                <Table className="align-items-center table-flush" responsive>
-                  <thead className="thead-light">
-                    <tr>
-                      <th scope="col">Full Name</th>
-                      <th scope="col">CIN</th>
-                      <th scope="col">Compte Epargne</th>
-                      <th scope="col">Compte Courant</th>
-                      <th scope="col" />
-                    </tr>
-                  </thead>
-                  <tbody>
-                    {!this.state.isLoading && Clients && clientAccounts && (
-                      <ClientList
-                        clients={Clients}
-                        clientAcc={this.getAccount}
-                        onShowModal={this.showModal}
-                        checkAccount={this.checkAccount}
+                {isLoading && (
+                  <CardBody>
+                    <div className="w-100 d-flex justify-content-center">
+                      <GuardSpinner
+                        size={40}
+                        frontColor="#5bc0de"
+                        loading={isLoading}
                       />
-                    )}
-                  </tbody>
-                </Table>
-                <CardFooter className="py-4">
-                  <nav aria-label="...">
-                    <Pagination
-                      className="pagination justify-content-end mb-0"
-                      listClassName="justify-content-end mb-0"
-                    >
-                      <PaginationItem className="disabled">
-                        <PaginationLink
-                          href="#pablo"
-                          onClick={(e) => e.preventDefault()}
-                          tabIndex="-1"
-                        >
-                          <i className="fas fa-angle-left" />
-                          <span className="sr-only">Previous</span>
-                        </PaginationLink>
-                      </PaginationItem>
-                      <PaginationItem className="active">
-                        <PaginationLink
-                          href="#pablo"
-                          onClick={(e) => e.preventDefault()}
-                        >
-                          1
-                        </PaginationLink>
-                      </PaginationItem>
-                      <PaginationItem>
-                        <PaginationLink
-                          href="#pablo"
-                          onClick={(e) => e.preventDefault()}
-                        >
-                          2 <span className="sr-only">(current)</span>
-                        </PaginationLink>
-                      </PaginationItem>
-                      <PaginationItem>
-                        <PaginationLink
-                          href="#pablo"
-                          onClick={(e) => e.preventDefault()}
-                        >
-                          3
-                        </PaginationLink>
-                      </PaginationItem>
-                      <PaginationItem>
-                        <PaginationLink
-                          href="#pablo"
-                          onClick={(e) => e.preventDefault()}
-                        >
-                          <i className="fas fa-angle-right" />
-                          <span className="sr-only">Next</span>
-                        </PaginationLink>
-                      </PaginationItem>
-                    </Pagination>
-                  </nav>
-                </CardFooter>
+                    </div>
+                  </CardBody>
+                )}
+                {!isLoading && (
+                  <Table className="align-items-center table-flush" responsive>
+                    <thead className="thead-light">
+                      <tr>
+                        <th scope="col">Full Name</th>
+                        <th scope="col">CIN</th>
+                        <th scope="col">Compte Epargne</th>
+                        <th scope="col">Compte Courant</th>
+                        <th scope="col" />
+                      </tr>
+                    </thead>
+                    <tbody>
+                      {Clients && clientAccounts && (
+                        <ClientList
+                          clients={
+                            (filteredData.length > 0 && filteredData) ||
+                            searchInput
+                              ? filteredData
+                              : Clients
+                          }
+                          onShowModal={this.showModal}
+                          checkAccount={this.checkAccount}
+                        />
+                      )}
+                    </tbody>
+                  </Table>
+                )}
+                {!isLoading && (
+                  <CardFooter className="py-4">
+                    <nav aria-label="...">
+                      <Pagination
+                        className="pagination justify-content-end mb-0"
+                        listClassName="justify-content-end mb-0"
+                      >
+                        <PaginationItem className="disabled">
+                          <PaginationLink
+                            href="#pablo"
+                            onClick={(e) => e.preventDefault()}
+                            tabIndex="-1"
+                          >
+                            <i className="fas fa-angle-left" />
+                            <span className="sr-only">Previous</span>
+                          </PaginationLink>
+                        </PaginationItem>
+                        <PaginationItem className="active">
+                          <PaginationLink
+                            href="#pablo"
+                            onClick={(e) => e.preventDefault()}
+                          >
+                            1
+                          </PaginationLink>
+                        </PaginationItem>
+                        <PaginationItem>
+                          <PaginationLink
+                            href="#pablo"
+                            onClick={(e) => e.preventDefault()}
+                          >
+                            2 <span className="sr-only">(current)</span>
+                          </PaginationLink>
+                        </PaginationItem>
+                        <PaginationItem>
+                          <PaginationLink
+                            href="#pablo"
+                            onClick={(e) => e.preventDefault()}
+                          >
+                            3
+                          </PaginationLink>
+                        </PaginationItem>
+                        <PaginationItem>
+                          <PaginationLink
+                            href="#pablo"
+                            onClick={(e) => e.preventDefault()}
+                          >
+                            <i className="fas fa-angle-right" />
+                            <span className="sr-only">Next</span>
+                          </PaginationLink>
+                        </PaginationItem>
+                      </Pagination>
+                    </nav>
+                  </CardFooter>
+                )}
               </Card>
             </div>
           </Row>

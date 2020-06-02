@@ -17,8 +17,6 @@ class ClientList extends React.Component {
     super(props);
     this.state = {
       clients: this.props.clients,
-      clientAccount: this.props.clientAcc,
-      accountExist: this.props.accountExist,
     };
   }
 
@@ -37,13 +35,9 @@ class ClientList extends React.Component {
   };
 
   static getDerivedStateFromProps(props, state) {
-    if (
-      props.clientAcc !== state.clientAccount &&
-      props.clients !== state.clients
-    ) {
+    if (props.clients !== state.clients) {
       return {
         clients: props.clients,
-        clientAccount: props.clientAcc,
       };
     }
     // Return null to indicate no change to state.

@@ -204,6 +204,8 @@ class AddClient extends React.Component {
       this.setState({ alertId: alertId });
     } catch (error) {
       console.log(error.message);
+      const alertId = StatusAlertService.showError(error.message);
+      this.setState({ alertId: alertId });
     }
   };
 
