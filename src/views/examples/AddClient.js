@@ -166,7 +166,11 @@ class AddClient extends React.Component {
           default:
             break;
         }
-        await this.sendClient(client);
+        try {
+          await this.sendClient(client);
+        } catch (error) {
+          console.log(error.message);
+        }
       }
     } else {
       console.log("there is an error!");
@@ -428,7 +432,7 @@ class AddClient extends React.Component {
                                 closeOnSelect={true}
                                 value={this.state.clientInfo.birthDay}
                                 onChange={(e) => {
-                                  this.handleBirthDay(e.format("DD-MM-YYYY"));
+                                  this.handleBirthDay(new Date(e.format("DD-MM-YYYY")));
                                 }}
                                 isValidDate={this.validDates}
                               />

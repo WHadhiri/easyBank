@@ -78,8 +78,11 @@ const addClient = async (req, res, next) => {
   try {
     const sess = await mongoose.startSession();
     sess.startTransaction();
-    await createdClient.save({ session: sess });
-    AccountController.addAccount(sess, createdClient, account, res, next);
+    await createdClient.save({ session: sess }, (err, doc) => {
+      if (err) console.log(err);
+      else
+        AccountController.addAccount(sess, createdClient, account, res, next);
+    });
     await sess.commitTransaction();
   } catch (err) {
     const error = new Error("Creating client failed. Please try again!");
