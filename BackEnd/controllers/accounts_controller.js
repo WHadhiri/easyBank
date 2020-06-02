@@ -68,7 +68,7 @@ const getAccountsByClient = async (req, res, next) => {
   });
 };
 
-const addAccount = async (client, req, res, next) => {
+const addAccount = async (sess, client, req, res, next) => {
   const { numacc, typeofaccount } = req;
   const createdAccount = new Account({
     numacc,
@@ -78,12 +78,9 @@ const addAccount = async (client, req, res, next) => {
   });
 
   try {
-    const sess = await mongoose.startSession();
-    sess.startTransaction();
     await createdAccount.save({ session: sess });
     client.accounts.push(createdAccount);
     await client.save({ session: sess });
-    await sess.commitTransaction();
   } catch (err) {
     const error = new Error("Creating account failed. Please try again!");
     error.code = 500;

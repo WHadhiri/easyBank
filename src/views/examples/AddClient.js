@@ -1,5 +1,6 @@
 import React from "react";
 import ReactDatetime from "react-datetime";
+import moment from "moment";
 import "react-status-alert/dist/status-alert.css";
 
 // reactstrap components
@@ -25,48 +26,59 @@ import StatusAlert, { StatusAlertService } from "react-status-alert";
 // core components
 import UserHeader from "components/Headers/UserHeader.js";
 
-class AddClient extends React.Component {
-  state = {
-    clientInfo: {
-      cin: "",
-      firstname: "",
-      lastname: "",
-      email: "",
-      birthDay: new Date(""),
-    },
-    contact: {
-      address: "",
-      city: "",
-      country: "",
-      postalCode: "",
-    },
-    number: 0,
-    selected: 0,
-    validate: {
-      cinState: "",
-      firstnameState: "",
-      lastnameState: "",
-      emailState: "",
-      birthdayState: "",
-      addressState: "",
-      cityState: "",
-      countryState: "",
-      postalState: "",
-    },
-    isValid: false,
-    alertId: "",
-  };
+const randomize = require("randomatic");
 
-  generateRandomNumber = () => {
-    const randomNumber = Math.trunc(Math.random() * 100000000000);
-    this.setState({ number: randomNumber });
+class AddClient extends React.Component {
+  constructor(props) {
+    super(props);
+    this.validDates = function (current) {
+      return current.isSameOrBefore(moment());
+    };
+
+    this.state = {
+      clientInfo: {
+        cin: "",
+        firstname: "",
+        lastname: "",
+        email: "",
+        birthDay: new Date(""),
+      },
+      contact: {
+        address: "",
+        city: "",
+        country: "",
+        postalCode: "",
+      },
+      accountNumber: "",
+      selected: 0,
+      validate: {
+        cinState: "",
+        firstnameState: "",
+        lastnameState: "",
+        emailState: "",
+        birthdayState: "",
+        addressState: "",
+        cityState: "",
+        countryState: "",
+        postalState: "",
+      },
+      isValid: false,
+      alertId: "",
+    };
+  }
+
+  generateAccountNumber = () => {
+    //const randomNumber = Math.trunc(Math.random() * 100000000000);
+    var accNumber = "xxxx-xxxx-xxxx-xxxx".replace(/[x]/g, (c) => {
+      return randomize("0", 1);
+    });
+    this.setState({ accountNumber: accNumber });
   };
 
   handleBirthDay = (date) => {
     const { clientInfo } = this.state;
     clientInfo.birthDay = date;
     this.setState({ clientInfo });
-    console.log(this.state.clientInfo.birthDay);
   };
 
   handleaccount1 = () => {
@@ -77,7 +89,7 @@ class AddClient extends React.Component {
     this.setState({ selected: 2 });
   };
 
-  addClient = (e) => {
+  addClient = async (e) => {
     const client = {
       cin: "",
       firstname: "",
@@ -90,6 +102,10 @@ class AddClient extends React.Component {
       city: "",
       country: "",
       postalCode: "",
+      account: {
+        accountNum: "",
+        type: "",
+      },
     };
     e.preventDefault();
     const { clientInfo, contact } = this.state;
@@ -114,7 +130,10 @@ class AddClient extends React.Component {
           "Please provide a valid birthday!"
         );
         this.setState({ alertId: alertId });
-      } else if ((new Date(clientInfo.birthDay.toString()).getFullYear() - (new Date().getFullYear())) <= 18) {
+      } else if (
+        new Date().getFullYear() - new Date(clientInfo.birthDay).getFullYear() <
+        18
+      ) {
         const alertId = StatusAlertService.showError(
           "Client must be 18 or older!"
         );
@@ -132,17 +151,59 @@ class AddClient extends React.Component {
         switch (this.state.selected) {
           case 1:
             client.cptCrt = true;
+            client.account = {
+              numacc: this.state.accountNumber,
+              typeofaccount: "Courant",
+            };
             break;
           case 2:
             client.cptEpt = true;
+            client.account = {
+              numacc: this.state.accountNumber,
+              typeofaccount: "Epargne",
+            };
             break;
           default:
             break;
         }
-        console.log(client);
+        await this.sendClient(client);
       }
     } else {
       console.log("there is an error!");
+    }
+  };
+
+  sendClient = async (client) => {
+    try {
+      const response = await fetch(`http://localhost:5000/api/clients`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          firstname: client.firstname,
+          lastname: client.lastname,
+          cin: client.cin,
+          email: client.email,
+          birthday: client.birthDay,
+          contact: {
+            address: client.address,
+            city: client.city,
+            country: client.country,
+            postalCode: client.postalCode,
+          },
+          account: client.account,
+        }),
+      });
+      const data = await response.json();
+      if (!response.ok) throw new Error(data.message);
+      console.log(data);
+      const alertId = StatusAlertService.showSuccess(
+        "Client added Succefully!"
+      );
+      this.setState({ alertId: alertId });
+    } catch (error) {
+      console.log(error.message);
     }
   };
 
@@ -367,6 +428,7 @@ class AddClient extends React.Component {
                                 onChange={(e) => {
                                   this.handleBirthDay(e.format("DD-MM-YYYY"));
                                 }}
+                                isValidDate={this.validDates}
                               />
                             </InputGroup>
                           </FormGroup>
@@ -423,7 +485,10 @@ class AddClient extends React.Component {
                               id="btn-crt"
                               outline
                               color="default"
-                              onClick={this.handleaccount1}
+                              onClick={() => {
+                                this.handleaccount1();
+                                this.generateAccountNumber();
+                              }}
                               active={this.state.selected === 1}
                             >
                               Compte Courant
@@ -436,7 +501,7 @@ class AddClient extends React.Component {
                               color="default"
                               onClick={() => {
                                 this.handleaccount2();
-                                this.generateRandomNumber();
+                                this.generateAccountNumber();
                               }}
                               active={this.state.selected === 2}
                             >
@@ -462,7 +527,7 @@ class AddClient extends React.Component {
                               className="form-control-alternative"
                               id="input-address"
                               placeholder="Account Number"
-                              value={this.state.number}
+                              value={this.state.accountNumber}
                               type="text"
                             />
                           </FormGroup>

@@ -212,7 +212,7 @@ class AccountD extends React.Component {
                             disabled
                             placeholder="Overall amount "
                             type="text"
-                            value={account.overallAmount || ""}
+                            value={account.overallAmount || 0 }
                           />
                         </FormGroup>
                       </Col>
