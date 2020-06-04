@@ -1,0 +1,250 @@
+.AppClient {
+  font-family: sans-serif;
+  text-align: center;
+}
+
+/* BACKGROUND IMAGE -- DELETE WHEN NEEDED */
+body {
+  /* background-image: url('https://i.imgur.com/AYbObMx.jpg'); */
+  background-color: transparent;
+}
+
+#banklogo {
+  width: 25%;
+}
+
+p {
+  color: #ffffff !important;
+}
+
+.selected {
+  background-color: #0c9400 !important;
+}
+
+#button:hover {
+  background-color: #0c9400 !important;
+}
+
+#typewriter {
+  border-right: solid 3px #fe6f27;
+  white-space: nowrap;
+  overflow: hidden;
+  animation: animated-text 2s steps(29, end) 1s 1 normal both,
+    animated-cursor 600ms steps(29, end) infinite;
+}
+
+/* text animation */
+
+@keyframes animated-text {
+  from {
+    width: 0;
+  }
+  to {
+    width: 430px;
+  }
+}
+
+/* cursor animations */
+
+@keyframes animated-cursor {
+  from {
+    border-right-color: #fe6f27;
+  }
+  to {
+    border-right-color: transparent;
+  }
+}
+
+#typewriter2 {
+  border-right: solid 3px #fe6f27;
+  white-space: nowrap;
+  overflow: hidden;
+  animation: animated-text2 3s steps(29, end) 3s 1 normal both,
+    animated-cursor 600ms steps(29, end) infinite;
+}
+
+@keyframes animated-text2 {
+  from {
+    width: 0;
+  }
+  to {
+    width: 430px;
+  }
+}
+
+/* cursor animations */
+
+@keyframes animated-cursor2 {
+  from {
+    border-right-color: #fe6f27;
+  }
+  to {
+    border-right-color: transparent;
+  }
+}
+
+#focus-in-expand-fwd {
+  -webkit-animation: focus-in-expand-fwd 3s cubic-bezier(0.25, 0.46, 0.45, 0.94)
+    4s alternate both;
+  animation: focus-in-expand-fwd 3s cubic-bezier(0.25, 0.46, 0.45, 0.94) 4s
+    alternate both;
+}
+
+@-webkit-keyframes focus-in-expand-fwd {
+  0% {
+    letter-spacing: -0.5em;
+    -webkit-transform: translateZ(-800px);
+    transform: translateZ(-800px);
+    -webkit-filter: blur(12px);
+    filter: blur(12px);
+    opacity: 0;
+  }
+  100% {
+    -webkit-transform: translateZ(0);
+    transform: translateZ(0);
+    -webkit-filter: blur(0);
+    filter: blur(0);
+    opacity: 1;
+  }
+}
+@keyframes focus-in-expand-fwd {
+  0% {
+    letter-spacing: -0.5em;
+    -webkit-transform: translateZ(-800px);
+    transform: translateZ(-800px);
+    -webkit-filter: blur(12px);
+    filter: blur(12px);
+    opacity: 0;
+  }
+  100% {
+    -webkit-transform: translateZ(0);
+    transform: translateZ(0);
+    -webkit-filter: blur(0);
+    filter: blur(0);
+    opacity: 1;
+  }
+}
+
+#tracking-in-expand {
+  -webkit-animation: tracking-in-expand 2s cubic-bezier(0.215, 0.61, 0.355, 1)
+    both;
+  animation: tracking-in-expand 2s cubic-bezier(0.215, 0.61, 0.355, 1) both;
+}
+
+@-webkit-keyframes tracking-in-expand {
+  0% {
+    letter-spacing: -0.5em;
+    opacity: 0;
+  }
+  40% {
+    opacity: 0.6;
+  }
+  100% {
+    opacity: 1;
+  }
+}
+@keyframes tracking-in-expand {
+  0% {
+    letter-spacing: -0.5em;
+    opacity: 0;
+  }
+  40% {
+    opacity: 0.6;
+  }
+  100% {
+    opacity: 1;
+  }
+}
+
+#heartbeat {
+  -webkit-animation: heartbeat 2.5s linear 12s both;
+  animation: heartbeat 2.5s linear 12s both;
+}
+
+@-webkit-keyframes heartbeat {
+  from {
+    -webkit-transform: scale(1);
+    transform: scale(1);
+    -webkit-transform-origin: center center;
+    transform-origin: center center;
+    -webkit-animation-timing-function: ease-out;
+    animation-timing-function: ease-out;
+  }
+  10% {
+    -webkit-transform: scale(0.91);
+    transform: scale(0.91);
+    -webkit-animation-timing-function: ease-in;
+    animation-timing-function: ease-in;
+  }
+  17% {
+    -webkit-transform: scale(0.98);
+    transform: scale(0.98);
+    -webkit-animation-timing-function: ease-out;
+    animation-timing-function: ease-out;
+  }
+  33% {
+    -webkit-transform: scale(0.87);
+    transform: scale(0.87);
+    -webkit-animation-timing-function: ease-in;
+    animation-timing-function: ease-in;
+  }
+  45% {
+    -webkit-transform: scale(1);
+    transform: scale(1);
+    -webkit-animation-timing-function: ease-out;
+    animation-timing-function: ease-out;
+  }
+}
+@keyframes heartbeat {
+  from {
+    -webkit-transform: scale(1);
+    transform: scale(1);
+    -webkit-transform-origin: center center;
+    transform-origin: center center;
+    -webkit-animation-timing-function: ease-out;
+    animation-timing-function: ease-out;
+  }
+  10% {
+    -webkit-transform: scale(0.91);
+    transform: scale(0.91);
+    -webkit-animation-timing-function: ease-in;
+    animation-timing-function: ease-in;
+  }
+  17% {
+    -webkit-transform: scale(0.98);
+    transform: scale(0.98);
+    -webkit-animation-timing-function: ease-out;
+    animation-timing-function: ease-out;
+  }
+  33% {
+    -webkit-transform: scale(0.87);
+    transform: scale(0.87);
+    -webkit-animation-timing-function: ease-in;
+    animation-timing-function: ease-in;
+  }
+  45% {
+    -webkit-transform: scale(1);
+    transform: scale(1);
+    -webkit-animation-timing-function: ease-out;
+    animation-timing-function: ease-out;
+  }
+}
+
+.atm-enter {
+  opacity: 0;
+  transform: scale(0.9);
+}
+.atm-enter-active {
+  opacity: 1;
+  transform: translateX(0);
+  transition: opacity 300ms, transform 300ms;
+}
+
+.atm-exit {
+  opacity: 1;
+}
+.atm-exit-active {
+  opacity: 0;
+  transform: scale(0.9);
+  transition: opacity 300ms, transform 300ms;
+}

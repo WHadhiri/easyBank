@@ -2,6 +2,7 @@ const mongoose = require("mongoose");
 
 const accountSchema = new mongoose.Schema({
   numacc: { type: String, required: true },
+  pin: { type: String, required: true },
   typeofaccount: { type: String, required: true },
   status: { type: String, required: true },
   dateop: { type: Date, default: new Date() },

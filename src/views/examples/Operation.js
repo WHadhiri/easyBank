@@ -34,24 +34,22 @@ class Operation extends React.Component {
     defaultModal: false,
     test: false,
     alertId: "",
-    typeOp:"",
-    amount :"",
-    Operation:{
-      numacc:"",
-      amount:"",
+    typeOp: "",
+    amount: "",
+    Operation: {
+      numacc: "",
+      amount: "",
     },
-    deposit:{
-      nameTrans:""
+    deposit: {
+      nameTrans: "",
     },
-    withdrawl:{
-      nameTrans:""
+    withdrawl: {
+      nameTrans: "",
     },
-    transfer:{
-      numaccDis:"",
-      nameTrans:""
-    }
-    
-
+    transfer: {
+      numaccDis: "",
+      nameTrans: "",
+    },
   };
   toggle = () => {
     this.setState({ dropdownOpen: !this.state.dropdownOpen });
@@ -71,74 +69,82 @@ class Operation extends React.Component {
 
   send = async (e) => {
     e.preventDefault();
-    const {Operation,deposit,withdrawl,transfer,typeOp,showOp,amount}=this.state;
-    
+    const {
+      Operation,
+      deposit,
+      withdrawl,
+      transfer,
+      //typeOp,
+      showOp,
+      //amount,
+    } = this.state;
+
     try {
-      
-      if (showOp == 1){
-       const response = await fetch(`http://localhost:5000/api/accounts/${Operation.numacc}/deposit`, {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({
-        
-          numacc:Operation.numacc,
-          amount: Operation.amount,
-          nameTrans: deposit.nameTrans,
-         
-        
-        }),
-      });
-      const data = await response.json();
-      if (!response.ok) throw new Error(data.message);
-      console.log(data);
-      this.setState({amount: data.accounts.overallAmount});
-      this.NOTorVER();
-    }
-    if (showOp == 2){
-      const response = await fetch(`http://localhost:5000/api/accounts/${Operation.numacc}/withdrawl`, {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({
-        
-          numacc:Operation.numacc,
-          amount: Operation.amount,
-          nameTrans: withdrawl.nameTrans,
-         
-        
-        }),
-      });
-      const data = await response.json();
-      if (!response.ok) throw new Error(data.message);
-      console.log(data);
-      this.setState({amount: data.accounts.overallAmount});
-      this.NOTorVER();
-    }
-    if (showOp == 3){
-       const response = await fetch(`http://localhost:5000/api/accounts/${Operation.numacc}/transfer`, {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({
-        
-          numacc:Operation.numacc,
-          amount: Operation.amount,
-          numaccDis: transfer.numaccDis,
-          nameTrans: transfer.nameTrans,
-        
-        }),
-      });
-      const data = await response.json();
-      if (!response.ok) throw new Error(data.message);
-      console.log(data);
-      this.setState({amount: data.accounts.overallAmount});
-      this.NOTorVER();
-    }
-      
+      if (showOp === 1) {
+        const response = await fetch(
+          `http://localhost:5000/api/accounts/${Operation.numacc}/deposit`,
+          {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json",
+            },
+            body: JSON.stringify({
+              numacc: Operation.numacc,
+              amount: Operation.amount,
+              nameTrans: deposit.nameTrans,
+            }),
+          }
+        );
+        const data = await response.json();
+        if (!response.ok) throw new Error(data.message);
+        console.log(data);
+        this.setState({ amount: data.accounts.overallAmount });
+        this.NOTorVER();
+      }
+      if (showOp === 2) {
+        const response = await fetch(
+          `http://localhost:5000/api/accounts/${Operation.numacc}/withdrawl`,
+          {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json",
+            },
+            body: JSON.stringify({
+              numacc: Operation.numacc,
+              amount: Operation.amount,
+              nameTrans: withdrawl.nameTrans,
+            }),
+          }
+        );
+        const data = await response.json();
+        if (!response.ok) throw new Error(data.message);
+        console.log(data);
+        this.setState({ amount: data.accounts.overallAmount });
+        this.NOTorVER();
+      }
+      if (showOp === 3) {
+        const response = await fetch(
+          `http://localhost:5000/api/accounts/${Operation.numacc}/transfer`,
+          {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json",
+            },
+            body: JSON.stringify({
+              numacc: Operation.numacc,
+              amount: Operation.amount,
+              numaccDis: transfer.numaccDis,
+              nameTrans: transfer.nameTrans,
+            }),
+          }
+        );
+        const data = await response.json();
+        if (!response.ok) throw new Error(data.message);
+        console.log(data);
+        this.setState({ amount: data.accounts.overallAmount });
+        this.NOTorVER();
+      }
+
       const alertId = StatusAlertService.showSuccess(
         "Operation added Succefully!"
       );
@@ -148,13 +154,13 @@ class Operation extends React.Component {
       const alertId = StatusAlertService.showError(error.message);
       this.setState({ alertId: alertId });
     }
-    
   };
-  
+
   render() {
     return (
       <>
         <UserHeader />
+        <StatusAlert />
         <Container className="mt--6" fluid>
           <Row className="justify-content-center">
             <Col className="order-xl-1" xl="8">
@@ -291,8 +297,8 @@ class Operation extends React.Component {
                               Please input a valid Amount.
                             </FormFeedback>
                           </FormGroup>
-                          </Col>
-                          <Col lg ="6">
+                        </Col>
+                        <Col lg="6">
                           <FormGroup className="mb-4">
                             <label
                               className="form-control-label"
@@ -306,17 +312,16 @@ class Operation extends React.Component {
                               placeholder="Name Transaction"
                               value={this.state.deposit.nameTrans}
                               onChange={(e) => {
-                              const { deposit } = this.state;
-                              deposit.nameTrans = e.target.value;
-                              this.setState({ deposit });
-                            }}
+                                const { deposit } = this.state;
+                                deposit.nameTrans = e.target.value;
+                                this.setState({ deposit });
+                              }}
                             />
                             <FormFeedback>
                               Please input a valid Name.
                             </FormFeedback>
                           </FormGroup>
-                            
-                          </Col>
+                        </Col>
                         <Col lg="6"></Col>
                         <Col sm="12" md={{ size: 6, offset: 3 }}>
                           <Button
@@ -324,8 +329,6 @@ class Operation extends React.Component {
                             size="md"
                             className="btn btn-info outline "
                             type="submit"
-                            
-                            
                           >
                             Deposit
                           </Button>
@@ -474,7 +477,7 @@ class Operation extends React.Component {
                             </FormFeedback>
                           </FormGroup>
                         </Col>
-                        <Col lg ="6">
+                        <Col lg="6">
                           <FormGroup className="mb-4">
                             <label
                               className="form-control-label"
@@ -497,8 +500,7 @@ class Operation extends React.Component {
                               Please input a valid Name.
                             </FormFeedback>
                           </FormGroup>
-                            
-                          </Col>
+                        </Col>
                         <Col lg="6"></Col>
                         <Col sm="12" md={{ size: 6, offset: 3 }}>
                           <Button
@@ -566,7 +568,6 @@ class Operation extends React.Component {
                           </div>
                         </Modal>
                       </Row>
-                      
                     )}
                     {this.state.showOp === 3 && (
                       <Row>
@@ -621,7 +622,7 @@ class Operation extends React.Component {
                           </FormGroup>
                         </Col>
                         <Col lg="6">
-                        <FormGroup className="mb-4">
+                          <FormGroup className="mb-4">
                             <label
                               className="form-control-label"
                               htmlFor="input-amount"
@@ -634,17 +635,15 @@ class Operation extends React.Component {
                               placeholder="Name Transaction"
                               value={this.state.transfer.nameTrans}
                               onChange={(e) => {
-                              const { transfer } = this.state;
-                              transfer.nameTrans = e.target.value;
-                              this.setState({ transfer });
-                            }}
+                                const { transfer } = this.state;
+                                transfer.nameTrans = e.target.value;
+                                this.setState({ transfer });
+                              }}
                             />
                             <FormFeedback>
                               Please input a valid Name.
                             </FormFeedback>
                           </FormGroup>
-
-
                         </Col>
                         <Col sm="12" md={{ size: 6, offset: 3 }}>
                           <Button

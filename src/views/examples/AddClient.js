@@ -50,6 +50,7 @@ class AddClient extends React.Component {
         postalCode: "",
       },
       accountNumber: "",
+      accountPin: "",
       selected: 0,
       validate: {
         cinState: "",
@@ -72,7 +73,10 @@ class AddClient extends React.Component {
     var accNumber = "xxxx-xxxx-xxxx-xxxx".replace(/[x]/g, (c) => {
       return randomize("0", 1);
     });
-    this.setState({ accountNumber: accNumber });
+    var accPin = "xxxx".replace(/[x]/g, (c) => {
+      return randomize("0", 1);
+    });
+    this.setState({ accountNumber: accNumber, accountPin: accPin });
   };
 
   handleBirthDay = (date) => {
@@ -432,7 +436,9 @@ class AddClient extends React.Component {
                                 closeOnSelect={true}
                                 value={this.state.clientInfo.birthDay}
                                 onChange={(e) => {
-                                  this.handleBirthDay(new Date(e.format("DD-MM-YYYY")));
+                                  this.handleBirthDay(
+                                    new Date(e.format("DD-MM-YYYY"))
+                                  );
                                 }}
                                 isValidDate={this.validDates}
                               />
@@ -542,15 +548,15 @@ class AddClient extends React.Component {
                           <FormGroup>
                             <label
                               className="form-control-label"
-                              htmlFor="input-address"
+                              htmlFor="input-pin"
                             >
-                              Password
+                              PIN
                             </label>
                             <Input
                               readOnly={true}
                               className="form-control-alternative"
-                              id="input-address"
-                              placeholder="CSC (Card Security Code)"
+                              id="input-pin"
+                              placeholder="PIN (Personal Identification Number)"
                               type="text"
                             />
                           </FormGroup>

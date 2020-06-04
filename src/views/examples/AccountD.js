@@ -24,14 +24,14 @@ class AccountD extends React.Component {
     this.accountID = this.props.match.params.accID;
     this.state = {
       account: {},
-      transactions:[],
-      numaccC:"",
+      transactions: [],
+      numaccC: "",
     };
   }
 
   async componentDidMount() {
     await this.fetchAccount();
-   await this.fetchTransaction();
+    await this.fetchTransaction();
   }
 
   async fetchAccount() {
@@ -40,16 +40,13 @@ class AccountD extends React.Component {
         `http://localhost:5000/api/accounts/${this.accountID}`
       );
       const data = await response.json();
-      const {numaccC}=this.state;
-      this.setState({numaccC:data.account.numacc});
+      this.setState({ numaccC: data.account.numacc });
       console.log(data.account.numacc);
       if (!response.ok) throw new Error(data.message);
       this.setState({ account: data.account });
     } catch (error) {
       console.log(error.message);
     }
-
-    
   }
   async fetchTransaction() {
     try {
@@ -59,14 +56,13 @@ class AccountD extends React.Component {
       const data = await response.json();
 
       if (!response.ok) throw new Error(data.message);
-      
-      this.setState({ transactions : data.trans });
+
+      this.setState({ transactions: data.trans });
       console.log(this.state.transactions);
     } catch (error) {
       console.log(error.message);
     }
   }
-
 
   render() {
     const { account } = this.state;
@@ -224,7 +220,7 @@ class AccountD extends React.Component {
                             disabled
                             placeholder="Overall amount "
                             type="text"
-                            value={account.overallAmount || 0 }
+                            value={account.overallAmount || 0}
                           />
                         </FormGroup>
                       </Col>
@@ -250,7 +246,9 @@ class AccountD extends React.Component {
                   </tr>
                 </thead>
                 <tbody>
-                  <Transaction Transactions={this.state.transactions}></Transaction>
+                  <Transaction
+                    Transactions={this.state.transactions}
+                  ></Transaction>
                 </tbody>
               </Table>
             </div>
