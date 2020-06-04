@@ -15,10 +15,13 @@ import {
 class ClientList extends React.Component {
   constructor(props) {
     super(props);
+    
     this.state = {
       clients: this.props.clients,
     };
+
   }
+
 
   selectedClient = (client) => {
     this.props.onShowModal(client);

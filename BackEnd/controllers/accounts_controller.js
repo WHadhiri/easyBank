@@ -90,7 +90,7 @@ const addAccount = async (sess, client, req, res, next) => {
   //res.status(201).json({ newAccount: createdAccount });
 };
 const deposit = async (req, res, next) => {
-  const { numacc, cin, typeofTrans, amount, nameTrans, numTrans } = req.body;
+  const { numacc, cin, typeofTrans, amount, nameTrans} = req.body;
   const Numacc = req.params.numacc;
 
   let accounts;
@@ -102,8 +102,9 @@ const deposit = async (req, res, next) => {
     return next(err);
   }
   accounts.overallAmount += Number(amount);
+  
   const createdTrans = new Trans({
-    numTrans,
+    numTrans:Math.floor(Math.random()*1000000),
     typeofTrans: "deposit",
     nameTrans,
     dateTrans: new Date(),
@@ -147,7 +148,7 @@ const withdrawl = async (req, res, next) => {
     accounts.overallAmount -= Number(amount);
 
     const createdTrans = new Trans({
-      numTrans,
+      numTrans:Math.floor(Math.random()*1000000),
       typeofTrans: "withdrawl",
       nameTrans,
       dateTrans: new Date(),
@@ -206,7 +207,7 @@ const transfer = async (req, res, next) => {
     accounts.overallAmount -= Number(amount);
     accountsDis.overallAmount += Number(amount);
     const createdTrans = new Trans({
-      numTrans,
+      numTrans:Math.floor(Math.random()*1000000),
       typeofTrans: "transfer",
       nameTrans,
       dateTrans: new Date(),
@@ -217,7 +218,7 @@ const transfer = async (req, res, next) => {
     });
 
     const createdTrans1 = new Trans({
-      numTrans,
+      numTrans:Math.floor(Math.random()*1000000),
       typeofTrans: "transfer",
       nameTrans,
       dateTrans: new Date(),

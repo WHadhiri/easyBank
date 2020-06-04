@@ -20,26 +20,18 @@ import Transaction from "components/TransactionList/Transaction.js";
 class AccountD extends React.Component {
   constructor(props) {
     super(props);
-    this.transactions = [
-      {
-        ntransaction: "45751",
-        type: "mondat",
-        date: "22/12/2015",
-        name: "bourse",
-        Debit: "1520",
-        Credit: "0",
-        balance: "1520",
-      },
-    ];
     this.clientName = this.props.match.params.clientName;
     this.accountID = this.props.match.params.accID;
     this.state = {
       account: {},
+      transactions:[],
+      numaccC:"",
     };
   }
 
   async componentDidMount() {
     await this.fetchAccount();
+   await this.fetchTransaction();
   }
 
   async fetchAccount() {
@@ -48,13 +40,33 @@ class AccountD extends React.Component {
         `http://localhost:5000/api/accounts/${this.accountID}`
       );
       const data = await response.json();
-
+      const {numaccC}=this.state;
+      this.setState({numaccC:data.account.numacc});
+      console.log(data.account.numacc);
       if (!response.ok) throw new Error(data.message);
       this.setState({ account: data.account });
     } catch (error) {
       console.log(error.message);
     }
+
+    
   }
+  async fetchTransaction() {
+    try {
+      const response = await fetch(
+        `http://localhost:5000/api/trans/${this.state.numaccC}`
+      );
+      const data = await response.json();
+
+      if (!response.ok) throw new Error(data.message);
+      
+      this.setState({ transactions : data.trans });
+      console.log(this.state.transactions);
+    } catch (error) {
+      console.log(error.message);
+    }
+  }
+
 
   render() {
     const { account } = this.state;
@@ -238,7 +250,7 @@ class AccountD extends React.Component {
                   </tr>
                 </thead>
                 <tbody>
-                  <Transaction Transactions={this.transactions}></Transaction>
+                  <Transaction Transactions={this.state.transactions}></Transaction>
                 </tbody>
               </Table>
             </div>

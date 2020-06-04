@@ -11,14 +11,28 @@ import {
   class Transaction extends React.Component{
     constructor(props) {
         super(props);
-        this.Transactions = this.props.Transactions;
+        console.log(this.props);
+        this.state = {
+          Transactions : this.props.Transactions,
+        };
+       
       }
-    
+      static getDerivedStateFromProps(props, state) {
+        if (props.Transactions !== state.Transactions) {
+          return {
+            Transactions: props.Transactions,
+          };
+        }
+        // Return null to indicate no change to state.
+        return null;
+      }
+      
     
      
     
       render() {
-        if (this.Transactions.length === 0) {
+        const {Transactions}=this.state;
+       if (Transactions.length === 0) {
           return (
             <tr>
               <th scope="row">
@@ -29,22 +43,23 @@ import {
             </tr>
           );
         }
+        
     
-        return this.Transactions.map((Transaction) => {
+        return Transactions.map((Transaction) => {
           return (
             <tr>
               <th scope="row">
                 <Media className="align-items-center">
-                  <span className="mb-0 text-sm">{Transaction.ntransaction}</span>
+                  <span className="mb-0 text-sm">{Transaction.numTrans}</span>
                 </Media>
               </th>
-              <td>{Transaction.type}</td>
+              <td>{Transaction.typeofTrans}</td>
               <td>
-               {Transaction.date}
+               {Transaction.dateTrans}
               </td>
     
               <td>
-               {Transaction.name}
+               {Transaction.nameTrans}
               </td>
               <td>
                {Transaction.debit}

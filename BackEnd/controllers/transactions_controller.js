@@ -5,20 +5,22 @@ const getTransByNum = async (req, res, next) => {
   
     let trans;
     try {
-     trans = await Trans.findOne({ numacc: Numtran });
+     trans = await Trans.find({ numacc: Numtran });
     } catch (error) {
       const err = new Error("Somthing went wrong. could not find transcation!");
       err.code = 500;
       return next(err);
     }
   
-    if (!trans) {
-      const err = new Error("No trans found with the provided Num account!");
+    if (!trans || trans.length === 0) {
+      const err = new Error("No trans found with the provided Num Account!");
       err.code = 404;
       return next(err);
     }
   
-    res.json({ trans: trans.toObject({ getters: true }) });
+    res.json({
+      trans: trans.map((Otrans) => Otrans.toObject({ getters: true })),
+    });
   };
 
   const addTrans = async (req, res, next) => {

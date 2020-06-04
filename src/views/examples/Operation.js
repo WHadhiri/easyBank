@@ -22,9 +22,10 @@ import {
 } from "reactstrap";
 
 //import StatusAlert, { StatusAlertService } from "react-status-alert";
-
+import StatusAlert, { StatusAlertService } from "react-status-alert";
 // core components
 import UserHeader from "components/Headers/UserHeader.js";
+
 class Operation extends React.Component {
   state = {
     dropdownOpen: false,
@@ -32,6 +33,25 @@ class Operation extends React.Component {
     showOp: 0,
     defaultModal: false,
     test: false,
+    alertId: "",
+    typeOp:"",
+    amount :"",
+    Operation:{
+      numacc:"",
+      amount:"",
+    },
+    deposit:{
+      nameTrans:""
+    },
+    withdrawl:{
+      nameTrans:""
+    },
+    transfer:{
+      numaccDis:"",
+      nameTrans:""
+    }
+    
+
   };
   toggle = () => {
     this.setState({ dropdownOpen: !this.state.dropdownOpen });
@@ -42,13 +62,95 @@ class Operation extends React.Component {
     });
   };
   NOTorVER = () => {
-    if (this.state.test === false) this.toggleModal("notificationModal");
-    else this.toggleModal("defaultModal");
+    if (this.state.test === false) this.toggleModal("defaultModal");
+    else this.toggleModal("notificationModal");
   };
   changeDropdownValue = (e) => {
     this.setState({ dropDownValue: e.currentTarget.textContent });
   };
 
+  send = async (e) => {
+    e.preventDefault();
+    const {Operation,deposit,withdrawl,transfer,typeOp,showOp,amount}=this.state;
+    
+    try {
+      
+      if (showOp == 1){
+       const response = await fetch(`http://localhost:5000/api/accounts/${Operation.numacc}/deposit`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+        
+          numacc:Operation.numacc,
+          amount: Operation.amount,
+          nameTrans: deposit.nameTrans,
+         
+        
+        }),
+      });
+      const data = await response.json();
+      if (!response.ok) throw new Error(data.message);
+      console.log(data);
+      this.setState({amount: data.accounts.overallAmount});
+      this.NOTorVER();
+    }
+    if (showOp == 2){
+      const response = await fetch(`http://localhost:5000/api/accounts/${Operation.numacc}/withdrawl`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+        
+          numacc:Operation.numacc,
+          amount: Operation.amount,
+          nameTrans: withdrawl.nameTrans,
+         
+        
+        }),
+      });
+      const data = await response.json();
+      if (!response.ok) throw new Error(data.message);
+      console.log(data);
+      this.setState({amount: data.accounts.overallAmount});
+      this.NOTorVER();
+    }
+    if (showOp == 3){
+       const response = await fetch(`http://localhost:5000/api/accounts/${Operation.numacc}/transfer`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+        
+          numacc:Operation.numacc,
+          amount: Operation.amount,
+          numaccDis: transfer.numaccDis,
+          nameTrans: transfer.nameTrans,
+        
+        }),
+      });
+      const data = await response.json();
+      if (!response.ok) throw new Error(data.message);
+      console.log(data);
+      this.setState({amount: data.accounts.overallAmount});
+      this.NOTorVER();
+    }
+      
+      const alertId = StatusAlertService.showSuccess(
+        "Operation added Succefully!"
+      );
+      this.setState({ alertId: alertId });
+    } catch (error) {
+      console.log(error.message);
+      const alertId = StatusAlertService.showError(error.message);
+      this.setState({ alertId: alertId });
+    }
+    
+  };
+  
   render() {
     return (
       <>
@@ -65,7 +167,7 @@ class Operation extends React.Component {
                   </Row>
                 </CardHeader>
                 <CardBody>
-                  <Form>
+                  <Form onSubmit={this.send}>
                     <Row>
                       <Col lg="6">
                         <FormGroup>
@@ -80,6 +182,12 @@ class Operation extends React.Component {
                             id="input-cin"
                             placeholder="N°Account"
                             type="text"
+                            value={this.state.Operation.numacc}
+                            onChange={(e) => {
+                              const { Operation } = this.state;
+                              Operation.numacc = e.target.value;
+                              this.setState({ Operation });
+                            }}
                           />
                           <FormFeedback>
                             Please input a correct CIN.
@@ -127,6 +235,7 @@ class Operation extends React.Component {
                             <DropdownItem
                               onClick={(e) => {
                                 this.setState({ showOp: 1 });
+                                this.setState({ TypeOp: "deposit" });
                                 this.changeDropdownValue(e);
                               }}
                             >
@@ -136,6 +245,7 @@ class Operation extends React.Component {
                             <DropdownItem
                               onClick={(e) => {
                                 this.setState({ showOp: 2 });
+                                this.setState({ TypeOp: "withdrawl" });
                                 this.changeDropdownValue(e);
                               }}
                             >
@@ -145,6 +255,7 @@ class Operation extends React.Component {
                             <DropdownItem
                               onClick={(e) => {
                                 this.setState({ showOp: 3 });
+                                this.setState({ TypeOp: "transfer" });
                                 this.changeDropdownValue(e);
                               }}
                             >
@@ -169,20 +280,52 @@ class Operation extends React.Component {
                               id="input-amount"
                               placeholder="Amount"
                               type="number"
+                              value={this.state.Operation.amount}
+                              onChange={(e) => {
+                                const { Operation } = this.state;
+                                Operation.amount = e.target.value;
+                                this.setState({ Operation });
+                              }}
                             />
                             <FormFeedback>
                               Please input a valid Amount.
                             </FormFeedback>
                           </FormGroup>
-                        </Col>
+                          </Col>
+                          <Col lg ="6">
+                          <FormGroup className="mb-4">
+                            <label
+                              className="form-control-label"
+                              htmlFor="input-amount"
+                            >
+                              Name Transaction
+                            </label>
+                            <Input
+                              className="form-control-alternative"
+                              id="input-amount"
+                              placeholder="Name Transaction"
+                              value={this.state.deposit.nameTrans}
+                              onChange={(e) => {
+                              const { deposit } = this.state;
+                              deposit.nameTrans = e.target.value;
+                              this.setState({ deposit });
+                            }}
+                            />
+                            <FormFeedback>
+                              Please input a valid Name.
+                            </FormFeedback>
+                          </FormGroup>
+                            
+                          </Col>
                         <Col lg="6"></Col>
                         <Col sm="12" md={{ size: 6, offset: 3 }}>
                           <Button
                             block
                             size="md"
                             className="btn btn-info outline "
-                            type="button"
-                            onClick={this.NOTorVER}
+                            type="submit"
+                            
+                            
                           >
                             Deposit
                           </Button>
@@ -223,6 +366,7 @@ class Operation extends React.Component {
                                   disabled
                                   placeholder="Name"
                                   type="text"
+                                  value={this.state.amount}
                                 />
                               </Col>
                             </Row>
@@ -318,12 +462,43 @@ class Operation extends React.Component {
                               id="input-amount"
                               placeholder="Amount"
                               type="number"
+                              value={this.state.Operation.amount}
+                              onChange={(e) => {
+                                const { Operation } = this.state;
+                                Operation.amount = e.target.value;
+                                this.setState({ Operation });
+                              }}
                             />
                             <FormFeedback>
                               Please input a valid Amount.
                             </FormFeedback>
                           </FormGroup>
                         </Col>
+                        <Col lg ="6">
+                          <FormGroup className="mb-4">
+                            <label
+                              className="form-control-label"
+                              htmlFor="input-amount"
+                            >
+                              Name Transaction
+                            </label>
+                            <Input
+                              className="form-control-alternative"
+                              id="input-amount"
+                              placeholder="Name Transaction"
+                              value={this.state.withdrawl.nameTrans}
+                              onChange={(e) => {
+                                const { withdrawl } = this.state;
+                                withdrawl.nameTrans = e.target.value;
+                                this.setState({ withdrawl });
+                              }}
+                            />
+                            <FormFeedback>
+                              Please input a valid Name.
+                            </FormFeedback>
+                          </FormGroup>
+                            
+                          </Col>
                         <Col lg="6"></Col>
                         <Col sm="12" md={{ size: 6, offset: 3 }}>
                           <Button
@@ -335,7 +510,63 @@ class Operation extends React.Component {
                             Withdrawal
                           </Button>
                         </Col>
+                        <Modal
+                          className="modal-dialog-centered"
+                          isOpen={this.state.defaultModal}
+                          toggle={() => this.toggleModal("defaultModal")}
+                        >
+                          <div className="modal-header">
+                            <h6
+                              className="modal-title"
+                              id="modal-title-default"
+                            >
+                              Information
+                            </h6>
+                            <button
+                              aria-label="Close"
+                              className="close"
+                              data-dismiss="modal"
+                              type="button"
+                              onClick={() => this.toggleModal("defaultModal")}
+                            >
+                              <span aria-hidden={true}>×</span>
+                            </button>
+                          </div>
+                          <div className="modal-body">
+                            <Row>
+                              <Col>
+                                <label
+                                  className="form-control-label"
+                                  htmlFor="input-cin"
+                                >
+                                  Account balance
+                                </label>
+                                <Input
+                                  disabled
+                                  placeholder="Name"
+                                  type="text"
+                                  value={this.state.amount}
+                                />
+                              </Col>
+                            </Row>
+                          </div>
+                          <div className="modal-footer">
+                            <Button color="primary" type="button">
+                              GOT it
+                            </Button>
+                            <Button
+                              className="ml-auto"
+                              color="link"
+                              data-dismiss="modal"
+                              type="button"
+                              onClick={() => this.toggleModal("defaultModal")}
+                            >
+                              Close
+                            </Button>
+                          </div>
+                        </Modal>
                       </Row>
+                      
                     )}
                     {this.state.showOp === 3 && (
                       <Row>
@@ -352,6 +583,12 @@ class Operation extends React.Component {
                               id="input-account-dest"
                               placeholder="Destination's Account Number"
                               type="text"
+                              value={this.state.transfer.numaccDis}
+                              onChange={(e) => {
+                                const { transfer } = this.state;
+                                transfer.numaccDis = e.target.value;
+                                this.setState({ transfer });
+                              }}
                             />
                             <FormFeedback>
                               Please input a valid Account Number.
@@ -371,11 +608,43 @@ class Operation extends React.Component {
                               id="input-amount"
                               placeholder="Amount"
                               type="number"
+                              value={this.state.Operation.amount}
+                              onChange={(e) => {
+                                const { Operation } = this.state;
+                                Operation.amount = e.target.value;
+                                this.setState({ Operation });
+                              }}
                             />
                             <FormFeedback>
                               Please input a valid Amount.
                             </FormFeedback>
                           </FormGroup>
+                        </Col>
+                        <Col lg="6">
+                        <FormGroup className="mb-4">
+                            <label
+                              className="form-control-label"
+                              htmlFor="input-amount"
+                            >
+                              Name Transaction
+                            </label>
+                            <Input
+                              className="form-control-alternative"
+                              id="input-amount"
+                              placeholder="Name Transaction"
+                              value={this.state.transfer.nameTrans}
+                              onChange={(e) => {
+                              const { transfer } = this.state;
+                              transfer.nameTrans = e.target.value;
+                              this.setState({ transfer });
+                            }}
+                            />
+                            <FormFeedback>
+                              Please input a valid Name.
+                            </FormFeedback>
+                          </FormGroup>
+
+
                         </Col>
                         <Col sm="12" md={{ size: 6, offset: 3 }}>
                           <Button
@@ -387,6 +656,61 @@ class Operation extends React.Component {
                             Transfer
                           </Button>
                         </Col>
+                        <Modal
+                          className="modal-dialog-centered"
+                          isOpen={this.state.defaultModal}
+                          toggle={() => this.toggleModal("defaultModal")}
+                        >
+                          <div className="modal-header">
+                            <h6
+                              className="modal-title"
+                              id="modal-title-default"
+                            >
+                              Information
+                            </h6>
+                            <button
+                              aria-label="Close"
+                              className="close"
+                              data-dismiss="modal"
+                              type="button"
+                              onClick={() => this.toggleModal("defaultModal")}
+                            >
+                              <span aria-hidden={true}>×</span>
+                            </button>
+                          </div>
+                          <div className="modal-body">
+                            <Row>
+                              <Col>
+                                <label
+                                  className="form-control-label"
+                                  htmlFor="input-cin"
+                                >
+                                  Account balance
+                                </label>
+                                <Input
+                                  disabled
+                                  placeholder="Name"
+                                  type="text"
+                                  value={this.state.amount}
+                                />
+                              </Col>
+                            </Row>
+                          </div>
+                          <div className="modal-footer">
+                            <Button color="primary" type="button">
+                              GOT it
+                            </Button>
+                            <Button
+                              className="ml-auto"
+                              color="link"
+                              data-dismiss="modal"
+                              type="button"
+                              onClick={() => this.toggleModal("defaultModal")}
+                            >
+                              Close
+                            </Button>
+                          </div>
+                        </Modal>
                       </Row>
                     )}
                   </Form>
