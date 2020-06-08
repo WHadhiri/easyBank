@@ -109,6 +109,7 @@ class AddClient extends React.Component {
       account: {
         accountNum: "",
         type: "",
+        pin: "",
       },
     };
     e.preventDefault();
@@ -158,6 +159,7 @@ class AddClient extends React.Component {
             client.account = {
               numacc: this.state.accountNumber,
               typeofaccount: "Courant",
+              pin: this.state.accountPin,
             };
             break;
           case 2:
@@ -165,6 +167,7 @@ class AddClient extends React.Component {
             client.account = {
               numacc: this.state.accountNumber,
               typeofaccount: "Epargne",
+              pin: this.state.accountPin,
             };
             break;
           default:
@@ -480,9 +483,8 @@ class AddClient extends React.Component {
                       </Row>
                     </div>
                     <hr className="my-4" />
-                    {/* Address */}
                     <h6 className="heading-small text-muted mb-4">
-                      account information
+                      Account Information
                     </h6>
                     <div className="pl-lg-4">
                       <hr className="my-4" />
@@ -530,14 +532,14 @@ class AddClient extends React.Component {
                           <FormGroup>
                             <label
                               className="form-control-label"
-                              htmlFor="input-address"
+                              htmlFor="input-accountNumber"
                             >
                               Account Number
                             </label>
                             <Input
                               readOnly={true}
                               className="form-control-alternative"
-                              id="input-address"
+                              id="input-accountNumber"
                               placeholder="Account Number"
                               value={this.state.accountNumber}
                               type="text"
@@ -558,12 +560,12 @@ class AddClient extends React.Component {
                               id="input-pin"
                               placeholder="PIN (Personal Identification Number)"
                               type="text"
+                              value={this.state.accountPin}
                             />
                           </FormGroup>
                         </Col>
                       </Row>
                     </div>
-                    {/* Compte */}
                     <hr className="my-4" />
                     {/* Address */}
                     <h6 className="heading-small text-muted mb-4">

@@ -36,23 +36,57 @@ class Clients extends React.Component {
       clientAccounts: [],
       visible: false,
       selectedClient: {
-        fullName: "",
+        firstname: "",
+        lastname: "",
         cin: "",
+        birthday: new Date(""),
+        email: "",
         cptEp: false,
         cptCrt: false,
+        contact: {
+          address: "",
+          city: "",
+          country: "",
+          postalCode: "",
+        },
+        account: {
+          numacc: "",
+          pin: "",
+          typeofaccount: "",
+        },
       },
       isLoading: false,
       filteredData: [],
       searchInput: "",
+      currentPage: 0,
     };
+    this.pageSize = 3;
+    this.pagesCount = 0;
   }
 
-  showModal = (client) => {
+  showModal = (client, type) => {
     const { selectedClient } = this.state;
-    selectedClient.fullName = client.fullName;
+    selectedClient.firstname = client.firstname;
+    selectedClient.lastname = client.lastname;
     selectedClient.cin = client.cin;
-    selectedClient.cptEp = client.cptEp;
-    selectedClient.cptCrt = client.cptCrt;
+    selectedClient.email = client.email;
+    selectedClient.birthday = client.birthday;
+    if (type.length === 2) {
+      selectedClient.cptCrt = true;
+      selectedClient.cptEp = true;
+    } else {
+      type.forEach((item) => {
+        if (item === "Courant") {
+          selectedClient.cptCrt = true;
+          selectedClient.cptEp = false;
+        }
+        if (item === "Epargne") {
+          selectedClient.cptEp = true;
+          selectedClient.cptCrt = false;
+        }
+      });
+    }
+    selectedClient.contact = client.contact;
     this.setState({ selectedClient });
     this.setState({ visible: true });
   };
@@ -66,6 +100,7 @@ class Clients extends React.Component {
     await this.fetchClients();
     await this.fetchClientAccounts();
     this.setState({ isLoading: false });
+    this.pagesCount = Math.ceil(this.state.Clients.length / this.pageSize);
   }
 
   async fetchClients() {
@@ -130,6 +165,30 @@ class Clients extends React.Component {
     this.setState({ filteredData: filteredData });
   };
 
+  handlePagination(e, index) {
+    e.preventDefault();
+    this.setState({
+      currentPage: index,
+    });
+  }
+
+  showPagination = () => {
+    let pages = [];
+    for (let i = 0; i < this.pagesCount; i++) {
+      pages.push(
+        <PaginationItem active={i === this.state.currentPage} key={i}>
+          <PaginationLink
+            href="#pablo"
+            onClick={(e) => this.handlePagination(e, i)}
+          >
+            {i + 1}
+          </PaginationLink>
+        </PaginationItem>
+      );
+    }
+    return pages;
+  };
+
   render() {
     const {
       Clients,
@@ -137,8 +196,8 @@ class Clients extends React.Component {
       clientAccounts,
       searchInput,
       filteredData,
+      currentPage,
     } = this.state;
-
     return (
       <>
         <Modals
@@ -212,8 +271,14 @@ class Clients extends React.Component {
                           clients={
                             (filteredData.length > 0 && filteredData) ||
                             searchInput
-                              ? filteredData
-                              : Clients
+                              ? filteredData.slice(
+                                  currentPage * this.pageSize,
+                                  (currentPage + 1) * this.pageSize
+                                )
+                              : Clients.slice(
+                                  currentPage * this.pageSize,
+                                  (currentPage + 1) * this.pageSize
+                                )
                           }
                           onShowModal={this.showModal}
                           checkAccount={this.checkAccount}
@@ -229,44 +294,28 @@ class Clients extends React.Component {
                         className="pagination justify-content-end mb-0"
                         listClassName="justify-content-end mb-0"
                       >
-                        <PaginationItem className="disabled">
+                        <PaginationItem disabled={currentPage <= 0}>
                           <PaginationLink
                             href="#pablo"
-                            onClick={(e) => e.preventDefault()}
-                            tabIndex="-1"
+                            onClick={(e) =>
+                              this.handlePagination(e, currentPage - 1)
+                            }
+                            previous
                           >
                             <i className="fas fa-angle-left" />
                             <span className="sr-only">Previous</span>
                           </PaginationLink>
                         </PaginationItem>
-                        <PaginationItem className="active">
+                        {this.showPagination().map((item) => item)}
+                        <PaginationItem
+                          disabled={currentPage >= this.pagesCount - 1}
+                        >
                           <PaginationLink
                             href="#pablo"
-                            onClick={(e) => e.preventDefault()}
-                          >
-                            1
-                          </PaginationLink>
-                        </PaginationItem>
-                        <PaginationItem>
-                          <PaginationLink
-                            href="#pablo"
-                            onClick={(e) => e.preventDefault()}
-                          >
-                            2 <span className="sr-only">(current)</span>
-                          </PaginationLink>
-                        </PaginationItem>
-                        <PaginationItem>
-                          <PaginationLink
-                            href="#pablo"
-                            onClick={(e) => e.preventDefault()}
-                          >
-                            3
-                          </PaginationLink>
-                        </PaginationItem>
-                        <PaginationItem>
-                          <PaginationLink
-                            href="#pablo"
-                            onClick={(e) => e.preventDefault()}
+                            onClick={(e) =>
+                              this.handlePagination(e, currentPage + 1)
+                            }
+                            next
                           >
                             <i className="fas fa-angle-right" />
                             <span className="sr-only">Next</span>

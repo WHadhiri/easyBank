@@ -84,10 +84,14 @@ const addAccount = async (sess, client, req, res, next) => {
   });
 
   try {
-    await createdAccount.save({ session: sess });
+    await createdAccount.save({ session: sess }, (err, doc) => {
+      if (err) throw err;
+    });
     client.accounts.push(createdAccount);
-    await client.save({ session: sess });
-  } catch (err) {
+    await client.save({ session: sess }, (err, doc) => {
+      if (err) throw err;
+    });
+  } catch (errs) {
     const error = new Error("Creating account failed. Please try again!");
     error.code = 500;
     return next(error);
@@ -103,10 +107,21 @@ const deposit = async (req, res, next) => {
   try {
     accounts = await Account.findOne({ numacc: Numacc });
   } catch (error) {
-    const err = new Error("Somthing went wrong. could not make operation!");
+    const err = new Error(
+      "Somthing went wrong. could not make deposit's operation!"
+    );
     err.code = 500;
     return next(err);
   }
+
+  if (!accounts) {
+    const err = new Error(
+      "No account found with the provided Account Number!"
+    );
+    err.code = 500;
+    return next(err);
+  }
+
   accounts.overallAmount += Number(amount);
 
   const createdTrans = new Trans({
@@ -123,14 +138,14 @@ const deposit = async (req, res, next) => {
   try {
     await accounts.save();
   } catch (err) {
-    const error = new Error("Operation failed. Please try again!");
+    const error = new Error("Deposit failed. Please try again!");
     error.code = 500;
     return next(error);
   }
   try {
     await createdTrans.save();
   } catch (err) {
-    const error = new Error(" transaction failed. Please try again!");
+    const error = new Error("Transaction failed. Please try again!");
     error.code = 500;
     return next(error);
   }
@@ -150,6 +165,15 @@ const withdrawl = async (req, res, next) => {
     err.code = 500;
     return next(err);
   }
+
+  if (!accounts) {
+    const err = new Error(
+      "No account found with the provided Account Number!"
+    );
+    err.code = 500;
+    return next(err);
+  }
+
   if (accounts.overallAmount > amount) {
     accounts.overallAmount -= Number(amount);
 
@@ -209,6 +233,23 @@ const transfer = async (req, res, next) => {
     err.code = 500;
     return next(err);
   }
+
+  if (!accounts) {
+    const err = new Error(
+      "No account found with the provided Account Number!"
+    );
+    err.code = 500;
+    return next(err);
+  }
+
+  if (!accountsDis) {
+    const err = new Error(
+      "No account found with the provided Destination Account Number!"
+    );
+    err.code = 500;
+    return next(err);
+  }
+
   if (accounts.overallAmount > amount) {
     accounts.overallAmount -= Number(amount);
     accountsDis.overallAmount += Number(amount);

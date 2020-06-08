@@ -15,16 +15,34 @@ import {
 class ClientList extends React.Component {
   constructor(props) {
     super(props);
-    
+
     this.state = {
       clients: this.props.clients,
     };
 
+    this.selected = [
+      {
+        clientID: "",
+        typeAccount: "",
+      },
+    ];
   }
 
+  filterDups = () => {
+    let jsonObject = this.selected.map(JSON.stringify);
+    let uniqueSet = new Set(jsonObject);
+    let uniqueSelected = Array.from(uniqueSet).map(JSON.parse);
+    return uniqueSelected;
+  };
 
   selectedClient = (client) => {
-    this.props.onShowModal(client);
+    let type = [];
+    let selectedCls = this.filterDups();
+    selectedCls.forEach((item) => {
+      if (item.clientID === client.id) type.push(item.typeAccount);
+    });
+    if (type || type.length !== 0) this.props.onShowModal(client, type);
+    else console.log("errooor");
   };
 
   checkAccountType = (id, type) => {
@@ -34,6 +52,7 @@ class ClientList extends React.Component {
 
   getClientAccount = (id, type) => {
     const { account } = this.props.checkAccount(id, type);
+    this.selected.push({ clientID: account.owner, typeAccount: account.type });
     return account;
   };
 

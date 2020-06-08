@@ -78,10 +78,24 @@ const addClient = async (req, res, next) => {
   try {
     const sess = await mongoose.startSession();
     sess.startTransaction();
-    await createdClient.save({ session: sess }, (err, doc) => {
-      if (err) console.log(err);
+    await createdClient.save({ session: sess }, async (err, doc) => {
+      if (err) throw err;
       else
-        AccountController.addAccount(sess, createdClient, account, res, next);
+        try {
+          await AccountController.addAccount(
+            sess,
+            createdClient,
+            account,
+            res,
+            next
+          );
+        } catch (error) {
+          const erreur = new Error(
+            "Creating account <-> Client failed. Please try again!"
+          );
+          erreur.code = 500;
+          return next(erreur);
+        }
     });
     await sess.commitTransaction();
   } catch (err) {
@@ -94,7 +108,15 @@ const addClient = async (req, res, next) => {
 };
 
 const updateClient = async (req, res, next) => {
-  const { firstname, lastname, cin, email, contact } = req.body;
+  const {
+    firstname,
+    lastname,
+    cin,
+    email,
+    contact,
+    birthday,
+    account,
+  } = req.body;
   const clientCin = req.params.cin;
 
   let updatedClient;
@@ -110,10 +132,32 @@ const updateClient = async (req, res, next) => {
   updatedClient.lastname = lastname;
   updatedClient.cin = cin;
   updatedClient.email = email;
+  updatedClient.birthday = birthday;
   updatedClient.contact = contact;
 
   try {
-    await updatedClient.save();
+    const sess = await mongoose.startSession();
+    sess.startTransaction();
+    await updatedClient.save({ session: sess }, async (err, doc) => {
+      if (err) throw err;
+      else
+        try {
+          await AccountController.addAccount(
+            sess,
+            updatedClient,
+            account,
+            res,
+            next
+          );
+        } catch (error) {
+          const erreur = new Error(
+            "Updating account <-> Client failed. Please try again!"
+          );
+          erreur.code = 500;
+          return next(erreur);
+        }
+    });
+    await sess.commitTransaction();
   } catch (err) {
     const error = new Error("Updating client failed. Please try again!");
     error.code = 500;
@@ -125,7 +169,43 @@ const updateClient = async (req, res, next) => {
     .json({ updatedClient: updatedClient.toObject({ getters: true }) });
 };
 
+const deleteClient = async (req, res, next) => {
+  const clientId = req.params.id;
+
+  let client;
+  try {
+    client = await Client.findById(clientId).populate("accounts");
+  } catch (error) {
+    const err = new Error("Somthing went wrong. could not delete client!");
+    err.code = 500;
+    return next(err);
+  }
+
+  if (!client) {
+    const err = new Error("Delete failed, could not find Client!");
+    err.code = 500;
+    return next(err);
+  }
+
+  try {
+    const sess = await mongoose.startSession();
+    sess.startTransaction();
+    await client.remove({ session: sess }, (err, doc) => {
+      if (err) console.log(err);
+      else console.log("deleted");
+    });
+    await sess.commitTransaction();
+  } catch (err) {
+    const error = new Error("Deleting client failed. Please try again!");
+    error.code = 500;
+    return next(error);
+  }
+
+  res.status(200).json({ client: client.toObject({ getters: true }) });
+};
+
 exports.getClients = getClients;
 exports.addClient = addClient;
 exports.getClientByCin = getClientByCin;
 exports.updateClient = updateClient;
+exports.deleteClient = deleteClient;
