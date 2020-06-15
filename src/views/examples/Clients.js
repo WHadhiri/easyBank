@@ -1,6 +1,8 @@
 import React from "react";
+import { withRouter } from "react-router-dom";
 import { GuardSpinner } from "react-spinners-kit";
 import "../../index.css";
+import "react-status-alert/dist/status-alert.css";
 
 // reactstrap components
 import {
@@ -21,6 +23,8 @@ import {
   InputGroupText,
   Input,
   CardBody,
+  Modal,
+  Button,
 } from "reactstrap";
 // core components
 
@@ -28,7 +32,11 @@ import Modals from "./Modals.js";
 
 import ClientList from "components/ClientList/ClientList.js";
 
+import { AuthContext } from "../../components/Context/auth-context.js";
+import StatusAlert, { StatusAlertService } from "react-status-alert";
+
 class Clients extends React.Component {
+  static contextType = AuthContext;
   constructor(props) {
     super(props);
     this.state = {
@@ -59,6 +67,8 @@ class Clients extends React.Component {
       filteredData: [],
       searchInput: "",
       currentPage: 0,
+      notificationModal: false,
+      clientToDelete: null,
     };
     this.pageSize = 3;
     this.pagesCount = 0;
@@ -95,6 +105,16 @@ class Clients extends React.Component {
     this.setState({ visible: false });
   };
 
+  toggleModal = (state) => {
+    this.setState({
+      [state]: !this.state[state],
+    });
+  };
+  showDeleteModal = (client) => {
+    this.setState({ clientToDelete: client });
+    this.toggleModal("notificationModal");
+  };
+
   async componentDidMount() {
     this.setState({ isLoading: true });
     await this.fetchClients();
@@ -102,6 +122,24 @@ class Clients extends React.Component {
     this.setState({ isLoading: false });
     this.pagesCount = Math.ceil(this.state.Clients.length / this.pageSize);
   }
+
+  updateState = async (item) => {
+    const { history } = this.props;
+    console.log(item);
+    const itemIndex = this.state.Clients.findIndex(
+      (data) => data.id === item.id
+    );
+    const newArray = [
+      // destructure all items from beginning to the indexed item
+      ...this.state.Clients.slice(0, itemIndex),
+      // add the updated item to the array
+      item,
+      // add the rest of the items to the array from the index after the replaced item
+      ...this.state.Clients.slice(itemIndex + 1),
+    ];
+    this.setState({ Clients: newArray });
+    if (history) history.push("/admin/clients");
+  };
 
   async fetchClients() {
     try {
@@ -160,7 +198,7 @@ class Clients extends React.Component {
   filterTable = () => {
     let { Clients, searchInput } = this.state;
     let filteredData = Clients.filter((value) => {
-      return value.cin.includes(searchInput);
+      return value.cin.startsWith(searchInput);
     });
     this.setState({ filteredData: filteredData });
   };
@@ -180,6 +218,7 @@ class Clients extends React.Component {
           <PaginationLink
             href="#pablo"
             onClick={(e) => this.handlePagination(e, i)}
+            className="bg-info no-bd"
           >
             {i + 1}
           </PaginationLink>
@@ -187,6 +226,37 @@ class Clients extends React.Component {
       );
     }
     return pages;
+  };
+
+  deleteClient = async () => {
+    const ctx = this.context;
+    try {
+      const response = await fetch(
+        `http://localhost:5000/api/clients/${this.state.clientToDelete.id}`,
+        {
+          method: "DELETE",
+          headers: {
+            Authorization: "Bearer " + ctx.token,
+          },
+        }
+      );
+      const data = await response.json();
+      if (!response.ok) throw new Error(data.message);
+      console.log(data);
+      const alertId = StatusAlertService.showSuccess(
+        "Client deleted Succefully!"
+      );
+      this.setState({ alertId: alertId });
+      const updatedItems = this.state.Clients.filter(
+        (item) => item.id !== this.state.clientToDelete.id
+      );
+      this.setState({ Clients: updatedItems });
+      this.toggleModal("notificationModal");
+    } catch (error) {
+      console.log(error.message);
+      const alertId = StatusAlertService.showError(error.message);
+      this.setState({ alertId: alertId });
+    }
   };
 
   render() {
@@ -200,12 +270,14 @@ class Clients extends React.Component {
     } = this.state;
     return (
       <>
+        <StatusAlert />
         <Modals
           show={this.state.visible}
           handleClose={this.closeModal}
           client={this.state.selectedClient}
+          updateState={this.updateState}
         />
-        <div className="header bg-gradient-info pb-8 pt-5 pt-md-8">
+        <div className="header bg-dark pb-8 pt-5 pt-md-8">
           <Container fluid>
             <div className="header-body"></div>
           </Container>
@@ -221,7 +293,7 @@ class Clients extends React.Component {
                     <Col className="my-3">
                       <h3 className="mb-0">Client List</h3>
                     </Col>
-                    <Col className="mr--9">
+                    <Col md={{ span: 4, offset: 4 }}>
                       <Form className="navbar-search navbar-search-dark form-inline mr-3 d-none d-md-flex ml-lg-auto">
                         <FormGroup className="mb-0">
                           <InputGroup className="input-group-alternative">
@@ -282,6 +354,7 @@ class Clients extends React.Component {
                           }
                           onShowModal={this.showModal}
                           checkAccount={this.checkAccount}
+                          showDelete={this.showDeleteModal}
                         />
                       )}
                     </tbody>
@@ -328,10 +401,60 @@ class Clients extends React.Component {
               </Card>
             </div>
           </Row>
+          <Modal
+            className="modal-dialog-centered modal-danger"
+            contentClassName="bg-gradient-danger"
+            isOpen={this.state.notificationModal}
+            toggle={() => this.toggleModal("notificationModal")}
+          >
+            <div className="modal-header">
+              <h6 className="modal-title" id="modal-title-notification">
+                Your Attention Is Required
+              </h6>
+              <button
+                aria-label="Close"
+                className="close"
+                data-dismiss="modal"
+                type="button"
+                onClick={() => this.toggleModal("notificationModal")}
+              >
+                <span aria-hidden={true}>×</span>
+              </button>
+            </div>
+            <div className="modal-body">
+              <div className="py-3 text-center">
+                <i className="ni ni-bell-55 ni-3x" />
+                <h4 className="heading mt-4">ATTENTION!</h4>
+                <p>Please confirm that you want to DELETE this client.</p>
+              </div>
+            </div>
+            <div className="modal-footer">
+              <Button
+                className="btn-white"
+                color="default"
+                type="button"
+                onClick={
+                  (() => this.toggleModal("notificationModal"),
+                  this.deleteClient)
+                }
+              >
+                I Confirm
+              </Button>
+              <Button
+                className="text-white ml-auto"
+                color="link"
+                data-dismiss="modal"
+                type="button"
+                onClick={() => this.toggleModal("notificationModal")}
+              >
+                Cancel
+              </Button>
+            </div>
+          </Modal>
         </Container>
       </>
     );
   }
 }
 
-export default Clients;
+export default withRouter(Clients);

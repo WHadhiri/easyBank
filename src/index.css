@@ -26,3 +26,7 @@ body {
 .searchInput::-ms-input-placeholder{
   color: gray !important;
 }
+
+.no-bd{
+  border-color: #5bc0de !important;
+}

@@ -1,7 +1,7 @@
 import React from "react";
 import { Route, Switch, Redirect } from "react-router-dom";
 // reactstrap components
-import { Container, Row} from "reactstrap";
+import { Container, Row } from "reactstrap";
 
 // core components
 import AuthNavbar from "components/Navbars/AuthNavbar.js";
@@ -34,9 +34,9 @@ class Auth extends React.Component {
   render() {
     return (
       <>
-        <div className="main-content">
+        <div className="main-content bg-dark">
           <AuthNavbar />
-          <div className="header bg-gradient-info py-9 py-lg-8">
+          <div className="header py-9 py-lg-8 bg-gradient-secondary">
             <Container>
               <div className="header-body text-center mb-9" />
             </Container>
@@ -49,10 +49,7 @@ class Auth extends React.Component {
                 x="0"
                 y="0"
               >
-                <polygon
-                  className="fill-default"
-                  points="2560 0 2560 100 0 100"
-                />
+                <polygon className="fill-dark" points="2560 0 2560 100 0 100" />
               </svg>
             </div>
           </div>
@@ -66,7 +63,7 @@ class Auth extends React.Component {
             </Row>
           </Container>
         </div>
-        <AuthFooter />
+        <AuthFooter/>
       </>
     );
   }

@@ -2,6 +2,7 @@ const express = require("express");
 const bodyParser = require("body-parser");
 const mongoose = require("mongoose");
 
+const userRoutes = require("./routes/users-routes");
 const clientRoutes = require("./routes/clients-routes");
 const accountRoutes = require("./routes/Accounts_routes");
 const transRoutes = require("./routes/Transactions_routes");
@@ -10,12 +11,16 @@ const app = express();
 app.use(bodyParser.json());
 
 app.use((req, res, next) => {
-  res.setHeader('Access-Control-Allow-Origin', '*');
-  res.setHeader('Access-Control-Allow-Headers', 'Origin, X-Requested-With, Content-Type, Accept, Authorization');
-  res.setHeader('Access-Control-Allow-Methods', 'GET, POST, PATCH, DELETE');
+  res.setHeader("Access-Control-Allow-Origin", "*");
+  res.setHeader(
+    "Access-Control-Allow-Headers",
+    "Origin, X-Requested-With, Content-Type, Accept, Authorization"
+  );
+  res.setHeader("Access-Control-Allow-Methods", "GET, POST, PATCH, DELETE");
   next();
 });
 
+app.use("/api/users", userRoutes);
 app.use("/api/accounts", accountRoutes);
 app.use("/api/clients", clientRoutes);
 app.use("/api/trans", transRoutes);

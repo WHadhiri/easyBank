@@ -22,6 +22,7 @@ import {
 } from "reactstrap";
 
 import StatusAlert, { StatusAlertService } from "react-status-alert";
+import { AuthContext } from "../../components/Context/auth-context.js";
 
 // core components
 import UserHeader from "components/Headers/UserHeader.js";
@@ -29,6 +30,7 @@ import UserHeader from "components/Headers/UserHeader.js";
 const randomize = require("randomatic");
 
 class AddClient extends React.Component {
+  static contextType = AuthContext;
   constructor(props) {
     super(props);
     this.validDates = function (current) {
@@ -185,11 +187,13 @@ class AddClient extends React.Component {
   };
 
   sendClient = async (client) => {
+    const ctx = this.context;
     try {
       const response = await fetch(`http://localhost:5000/api/clients`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
+          "Authorization": 'Bearer ' + ctx.token
         },
         body: JSON.stringify({
           firstname: client.firstname,
@@ -297,10 +301,10 @@ class AddClient extends React.Component {
           <Row className="justify-content-center">
             <Col className="order-xl-1" xl="8">
               <Card className="bg-secondary shadow">
-                <CardHeader className="bg-white border-0">
+                <CardHeader className="bg-dark border-0">
                   <Row className="align-items-center">
                     <Col xs="8">
-                      <h3 className="mb-0">Add Client</h3>
+                      <h3 className="mb-0 text-white">Add Client</h3>
                     </Col>
                   </Row>
                 </CardHeader>

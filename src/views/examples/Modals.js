@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useContext } from "react";
 import ReactDOM from "react-dom";
 import ReactDatetime from "react-datetime";
 import moment from "moment";
@@ -24,9 +24,12 @@ import {
 
 import StatusAlert, { StatusAlertService } from "react-status-alert";
 
+import { AuthContext } from "../../components/Context/auth-context.js";
+
 const randomize = require("randomatic");
 
 const ModalOverlay = (props) => {
+  const ctx = useContext(AuthContext);
   const [firstname, setFirstname] = useState(props.client.firstname);
   const [lastname, setlastname] = useState(props.client.lastname);
   const [cin, setCin] = useState(props.client.cin);
@@ -179,22 +182,37 @@ const ModalOverlay = (props) => {
         setAlertId(alertId);
       } else {
         try {
-          const clientInfo = {
-            cin,
-            firstname,
-            lastname,
-            email,
-            birthday,
-            address,
-            city,
-            country,
-            postalCode,
-            account: {
-              numacc,
-              typeofaccount,
-              pin,
-            },
-          };
+          let clientInfo;
+          if (numacc || typeofaccount || pin) {
+            clientInfo = {
+              cin,
+              firstname,
+              lastname,
+              email,
+              birthday,
+              address,
+              city,
+              country,
+              postalCode,
+              account: {
+                numacc,
+                typeofaccount,
+                pin,
+              },
+            };
+          } else {
+            clientInfo = {
+              cin,
+              firstname,
+              lastname,
+              email,
+              birthday,
+              address,
+              city,
+              country,
+              postalCode,
+            };
+          }
           await sendUpdatedClient(clientInfo);
         } catch (error) {
           console.log(error.message);
@@ -213,6 +231,7 @@ const ModalOverlay = (props) => {
           method: "PATCH",
           headers: {
             "Content-Type": "application/json",
+            Authorization: "Bearer " + ctx.token,
           },
           body: JSON.stringify({
             firstname: client.firstname,
@@ -226,17 +245,18 @@ const ModalOverlay = (props) => {
               country: client.country,
               postalCode: client.postalCode,
             },
-            account: client.account,
+            account: client.account?.numacc ? client.account : null,
           }),
         }
       );
       const data = await response.json();
       if (!response.ok) throw new Error(data.message);
-      console.log(data);
+      props.updateState(data.updatedClient);
       const alertId = StatusAlertService.showSuccess(
         "Client Updated Succefully!"
       );
       setAlertId(alertId);
+      setTimeout(() => props.handleClose(), 1000);
     } catch (error) {
       console.log(error.message);
       const alertId = StatusAlertService.showError(error.message);

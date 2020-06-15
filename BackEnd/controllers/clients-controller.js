@@ -141,6 +141,7 @@ const updateClient = async (req, res, next) => {
     await updatedClient.save({ session: sess }, async (err, doc) => {
       if (err) throw err;
       else
+        if(account)
         try {
           await AccountController.addAccount(
             sess,

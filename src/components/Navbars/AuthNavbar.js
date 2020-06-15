@@ -17,7 +17,7 @@ class AuthNavbar extends React.Component {
         >
           <Container className="justify-content-center">
             <NavbarBrand to="/" tag={Link}>
-              <img alt="BankLogo" src={require("assets/img/brand/BankLogo.png")} />
+              <img alt="BankLogo" src={require("assets/img/brand/test.png")} />
             </NavbarBrand>
           </Container>
         </Navbar>

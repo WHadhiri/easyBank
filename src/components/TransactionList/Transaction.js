@@ -1,10 +1,6 @@
 import React from "react";
 // reactstrap components
 import {
-    DropdownMenu,
-    DropdownItem,
-    UncontrolledDropdown,
-    DropdownToggle,
     Media,
   } from "reactstrap";
 

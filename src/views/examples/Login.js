@@ -1,4 +1,4 @@
-import React from "react";
+import React, { forwardRef } from "react";
 
 // reactstrap components
 import {
@@ -85,7 +85,7 @@ class Login extends React.Component {
           : (validate2.emailState = "has-danger");
         break;
       case "ipt2":
-        e.target.value.length !== 0
+        e.target.value.length > 6
           ? (validate2.passwordState = "has-success")
           : (validate2.passwordState = "has-danger");
         break;
@@ -132,17 +132,38 @@ class Login extends React.Component {
     }
   }
 
-  submitForm2(e) {
+  async submitForm2(e) {
     const ctx = this.context;
     e.preventDefault();
-    ctx.login();
+    try {
+      const response = await fetch(`http://localhost:5000/api/users/login`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          email: this.state.email,
+          password: this.state.password,
+        }),
+      });
+      const data = await response.json();
+      if (!response.ok) throw new Error(data.message);
+      const alertId = StatusAlertService.showSuccess("Welcome to our Bank!");
+      this.setState({ alertId: alertId });
+      ctx.login(data.userId, data.token);
+    } catch (error) {
+      console.log(error.message);
+      const alertId = StatusAlertService.showError(error.message);
+      this.setState({ alertId: alertId });
+    }
   }
 
   render() {
+    const ctx = this.context;
     return (
       <>
-        <StatusAlert />
-        <Grid container justify="space-between" spacing="2">
+        {!ctx.isLoggedIn && <StatusAlert />}
+        <Grid container justify="space-between">
           <Col>
             <Card className="bg-secondary shadow border-0 mt--5">
               <CardHeader

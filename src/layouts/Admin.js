@@ -55,11 +55,11 @@ class Admin extends React.Component {
           routes={routes.filter(
             (route) =>
               route.layout !== "/auth" &&
-              (route.name !== "Accounts" && route.name !== "Account detail")
+              (route.name !== "Accounts" && route.name !== "Account detail" && route.name !== "Dashboard")
           )}
           logo={{
             innerLink: "/admin/index",
-            imgSrc: require("assets/img/brand/logo.png"),
+            imgSrc: require("assets/img/brand/test.png"),
             imgAlt: "...",
           }}
         />
@@ -70,10 +70,10 @@ class Admin extends React.Component {
           />
           <Switch>
             {this.getRoutes(routes)}
-            <Redirect from="*" to="/admin/index" />
+            <Redirect from="*" to="/admin/clients" />
           </Switch>
           <Container fluid>
-            <AdminFooter />
+            <AdminFooter/>
           </Container>
         </div>
       </>

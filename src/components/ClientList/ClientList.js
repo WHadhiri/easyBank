@@ -45,6 +45,11 @@ class ClientList extends React.Component {
     else console.log("errooor");
   };
 
+  selectedClientToDelete = (client) => {
+    //console.log(client);
+    this.props.showDelete(client);
+  };
+
   checkAccountType = (id, type) => {
     const { isType } = this.props.checkAccount(id, type);
     return isType;
@@ -147,7 +152,10 @@ class ClientList extends React.Component {
                 <DropdownItem onClick={(e) => this.selectedClient(client)}>
                   <i className="ni ni-zoom-split-in" /> Update Informations
                 </DropdownItem>
-                <DropdownItem href="#pablo" onClick={(e) => e.preventDefault()}>
+                <DropdownItem
+                  href="#pablo"
+                  onClick={(e) => this.selectedClientToDelete(client)}
+                >
                   <i className="ni ni-fat-remove text-red" /> Delete Client
                 </DropdownItem>
               </DropdownMenu>

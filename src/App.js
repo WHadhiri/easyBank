@@ -7,16 +7,19 @@ import AppClient from "./ATM/Components/AppClient.js";
 import { AuthContext } from "components/Context/auth-context.js";
 
 const App = () => {
-  const [isLoggedIn, setIsLoggedIn] = useState(false);
+  const [token, setToken] = useState(false);
   const [isClientIn, setIsClientIn] = useState(false);
   const [atm, setAtm] = useState(false);
+  const [userId, setUserId] = useState(false);
 
-  const login = useCallback(() => {
-    setIsLoggedIn(true);
+  const login = useCallback((uid, token) => {
+    setToken(token);
+    setUserId(uid);
   }, []);
 
   const logout = useCallback(() => {
-    setIsLoggedIn(false);
+    setToken(null);
+    setUserId(null);
   }, []);
 
   const accessATM = useCallback((atm) => {
@@ -27,14 +30,14 @@ const App = () => {
 
   let routes;
 
-  if (isLoggedIn && !isClientIn)
+  if (token && !isClientIn)
     routes = (
       <Switch>
         <Route path="/admin" render={(props) => <AdminLayout {...props} />} />
         <Redirect to="/admin" />
       </Switch>
     );
-  else if (!isLoggedIn && isClientIn)
+  else if (!token && isClientIn)
     routes = (
       <Switch>
         <Route path="/atm" render={(props) => <AppClient {...props} />} />
@@ -52,9 +55,11 @@ const App = () => {
   return (
     <AuthContext.Provider
       value={{
-        isLoggedIn: isLoggedIn,
+        isLoggedIn: !!token,
+        token: token,
         login: login,
         logout: logout,
+        userId: userId,
         isClientIn: isClientIn,
         accessATM: accessATM,
         atm: atm,
