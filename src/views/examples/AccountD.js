@@ -1,5 +1,5 @@
 import React from "react";
-import { withRouter } from "react-router-dom";
+import { withRouter, Link } from "react-router-dom";
 
 // reactstrap components
 import {
@@ -13,6 +13,7 @@ import {
   Table,
   Row,
   Col,
+  Button,
 } from "reactstrap";
 
 import Transaction from "components/TransactionList/Transaction.js";
@@ -252,6 +253,20 @@ class AccountD extends React.Component {
                 </tbody>
               </Table>
             </div>
+          </Row>
+          <Row>
+            <Col md={{ span: 3, offset: 3 }}></Col>
+            <Col className="pt-3" md={{ span: 3, offset: 7 }}>
+              <Button
+                outline
+                color="info"
+                type="button"
+                tag={Link}
+                to={`/admin/${this.state.numaccC}/extrait`}
+              >
+                Show Extrait
+              </Button>
+            </Col>
           </Row>
         </Container>
       </>

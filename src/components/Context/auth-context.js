@@ -9,4 +9,5 @@ export const AuthContext = createContext({
   isClientIn: false,
   accessATM: () => {},
   atm: null,
+  exitATM: () => {},
 });

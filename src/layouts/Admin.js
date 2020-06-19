@@ -55,7 +55,7 @@ class Admin extends React.Component {
           routes={routes.filter(
             (route) =>
               route.layout !== "/auth" &&
-              (route.name !== "Accounts" && route.name !== "Account detail" && route.name !== "Dashboard")
+              (route.name !== "Accounts" && route.name !== "Account detail" && route.name !== "Dashboard" && route.name !== "Extrait")
           )}
           logo={{
             innerLink: "/admin/index",

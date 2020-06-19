@@ -24,8 +24,12 @@ const App = () => {
 
   const accessATM = useCallback((atm) => {
     setAtm(atm);
-    console.log("here");
     setIsClientIn(true);
+  }, []);
+
+  const exitATM = useCallback((atm) => {
+    setAtm(null);
+    setIsClientIn(false);
   }, []);
 
   let routes;
@@ -63,6 +67,7 @@ const App = () => {
         isClientIn: isClientIn,
         accessATM: accessATM,
         atm: atm,
+        exitATM: exitATM,
       }}
     >
       <BrowserRouter>{routes}</BrowserRouter>

@@ -5,6 +5,7 @@ import Clients from "views/examples/Clients.js";
 import AccountD from "views/examples/AccountD";
 import Accounts from "views/examples/Accounts";
 import Operation from "views/examples/Operation";
+import Pdf from "components/Extrait/Pdf";
 var routes = [
   {
     path: "/index",
@@ -53,6 +54,14 @@ var routes = [
     name: "Operation",
     icon: "ni ni-money-coins",
     component: Operation,
+    layout: "/admin",
+    exact: true
+  },
+
+  {
+    path: "/:numacc/extrait",
+    name: "Extrait",
+    component: Pdf,
     layout: "/admin",
     exact: true
   },

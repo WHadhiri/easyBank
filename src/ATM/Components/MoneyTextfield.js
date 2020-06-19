@@ -1,10 +1,14 @@
-import React from 'react';
+import React,{ useState } from 'react';
 import clsx from 'clsx';
 import { Grid, Button } from '@material-ui/core';
 import { makeStyles, withStyles } from '@material-ui/core/styles';
 import InputAdornment from '@material-ui/core/InputAdornment';
 import TextField from '@material-ui/core/TextField';
 import { BtnStyles } from './Styles';
+import "react-status-alert/dist/status-alert.css";
+
+//import StatusAlert, { StatusAlertService } from "react-status-alert";
+import StatusAlert, { StatusAlertService } from "react-status-alert";
 
 const useStyles = makeStyles(theme => ({
 	root: {
@@ -52,19 +56,55 @@ const CssTextField = withStyles({
 	}
 })(TextField);
 
-export function Withdraw() {
+export function Withdraw(props) {
 	const btnstyle = BtnStyles();
 	const classes = useStyles();
-	const [values, setValues] = React.useState({
-		withdraw: ''
-	});
+	const [OPwithdraw, setOPwithdraw] = useState({amount :''});
+	const deposit = async (e) => {
+		e.preventDefault();
+		
+		
+		try {
+		 
+			const response = await fetch(
+				`http://localhost:5000/api/accounts/${props.account.numacc}/withdrawl`,
+			  {
+				method: "POST",
+				headers: {
+				  "Content-Type": "application/json",
+				},
+				body: JSON.stringify({
+				  numacc: props.account.numacc,
+				  amount: OPwithdraw.amount,
+				  nameTrans: "ATM Withdraw Tansaction",
+				}),
+			  }
+			);
+			console.log(OPwithdraw.amount);
+			const data = await response.json();
+			if (!response.ok) throw new Error(data.message);
+			console.log(data);
+			
+		
+		   const alertId = StatusAlertService.showSuccess(
+			"Operation added Succefully!"
+		  );
+		 
+		} catch (error) {
+		  console.log(error.message);
+		  const alertId = StatusAlertService.showError(error.message);
+		 
+		}
+	  };
+
 
 	const handleChange = prop => event => {
-		setValues({ ...values, [prop]: event.target.value });
+		setOPwithdraw({ ...OPwithdraw, [prop]: event.target.value });
 	};
 
 	return (
 		<div>
+			<form onSubmit={deposit}>
 			<div className={classes.root}>
 				<Grid container spacing={0}>
 					<Grid item xs>
@@ -73,8 +113,8 @@ export function Withdraw() {
 							className={clsx(classes.margin, classes.textField)}
 							variant="outlined"
 							label="Withdraw"
-							value={values.withdraw}
-							onChange={handleChange('withdraw')}
+							value={OPwithdraw.amount}
+							onChange={handleChange('amount')}
 							autoFocus={true}
 							InputProps={{
 								startAdornment: <InputAdornment position="start">$</InputAdornment>
@@ -82,24 +122,25 @@ export function Withdraw() {
 						/>
 					</Grid>
 					<Grid item xs>
-						<Button variant="contained" color="inherit" className={btnstyle.ok} id="button">
+						<Button variant="contained" color="inherit" className={btnstyle.ok} id="button" type="submit">
 							OK
 						</Button>
 					</Grid>
 				</Grid>
 			</div>
+			</form>
 		</div>
 	);
 }
 export function Deposit() {
 	const btnstyle = BtnStyles();
 	const classes = useStyles();
-	const [values, setValues] = React.useState({
-		deposit: ''
-	});
+	const [AM, setAM] = useState("");
+	
+
 
 	const handleChange = prop => event => {
-		setValues({ ...values, [prop]: event.target.value });
+		setAM({ ...AM, [prop]: event.target.value });
 	};
 
 	return (
@@ -112,7 +153,7 @@ export function Deposit() {
 							className={clsx(classes.margin, classes.textField)}
 							variant="outlined"
 							label="Deposit"
-							value={values.deposit}
+							value={AM}
 							onChange={handleChange('deposit')}
 							autoFocus={true}
 							InputProps={{

@@ -1,4 +1,5 @@
 import React, { useContext } from "react";
+import { useHistory} from "react-router-dom";
 import { Button } from "@material-ui/core/";
 import { ATMStyles, BtnStyles } from "./Styles";
 import { Withdraw } from "./MoneyTextfield";
@@ -10,6 +11,7 @@ import { CSSTransition } from "react-transition-group";
 
 export default function ATM() {
   const ctx = useContext(AuthContext);
+  const history = useHistory();
   //console.log(ctx.atm);
   const styles = ATMStyles();
   const btnstyle = BtnStyles();
@@ -28,11 +30,11 @@ export default function ATM() {
   }
 
   function ShowWithdraw() {
-    return <Withdraw />;
+    return <Withdraw account={ctx.atm.clientAccount} />;
   }
 
   function ShowTransfer() {
-    return <Transfer />;
+    return <Transfer account={ctx.atm.clientAccount} />;
   }
 
   function ToggleTextField() {
@@ -97,13 +99,28 @@ export default function ATM() {
             </Button>
           </div>
         </div>
-        <div className={styles.footer} />
+        <div className={styles.footer}>
+          <Button
+            variant="contained"
+            color="inherit"
+            onClick={() => ctx.exitATM()}
+            id="button"
+          >
+            Exit
+          </Button>
+        </div>
       </div>
     );
   }
 
   return (
-    <CSSTransition in={show} timeout={10000} classNames="atm" mountOnEnter unmountOnExit>
+    <CSSTransition
+      in={show}
+      timeout={10000}
+      classNames="atm"
+      mountOnEnter
+      unmountOnExit
+    >
       {showATM()}
     </CSSTransition>
   );
