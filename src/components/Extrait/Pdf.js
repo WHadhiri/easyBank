@@ -46,7 +46,7 @@ class Pdf extends Component {
         {data.length !== 0 && (
           <Container className=" ml-5 mt-3" fluid>
             <Fragment>
-              <PDFViewer width="1000" height="600" className="app">
+              <PDFViewer width="1000" height="600" className="app" >
                 <Invoice invoice={data} />
               </PDFViewer>
             </Fragment>

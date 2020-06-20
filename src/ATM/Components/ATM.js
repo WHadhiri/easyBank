@@ -1,5 +1,5 @@
 import React, { useContext } from "react";
-import { useHistory} from "react-router-dom";
+import { useHistory } from "react-router-dom";
 import { Button } from "@material-ui/core/";
 import { ATMStyles, BtnStyles } from "./Styles";
 import { Withdraw } from "./MoneyTextfield";

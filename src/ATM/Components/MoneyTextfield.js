@@ -1,4 +1,4 @@
-import React,{ useState } from 'react';
+import React,{ useState} from 'react';
 import clsx from 'clsx';
 import { Grid, Button } from '@material-ui/core';
 import { makeStyles, withStyles } from '@material-ui/core/styles';
@@ -76,7 +76,7 @@ export function Withdraw(props) {
 				body: JSON.stringify({
 				  numacc: props.account.numacc,
 				  amount: OPwithdraw.amount,
-				  nameTrans: "ATM Withdraw Tansaction",
+				  nameTrans: "ATM Withdrawal Tansaction",
 				}),
 			  }
 			);
@@ -93,8 +93,8 @@ export function Withdraw(props) {
 		} catch (error) {
 		  console.log(error.message);
 		  const alertId = StatusAlertService.showError(error.message);
-		 
 		}
+
 	  };
 
 
@@ -103,6 +103,8 @@ export function Withdraw(props) {
 	};
 
 	return (
+		<>
+		<StatusAlert/>
 		<div>
 			<form onSubmit={deposit}>
 			<div className={classes.root}>
@@ -130,6 +132,7 @@ export function Withdraw(props) {
 			</div>
 			</form>
 		</div>
+		</>
 	);
 }
 export function Deposit() {
